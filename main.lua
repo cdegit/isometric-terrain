@@ -34,7 +34,7 @@ function love.draw()
 		end
 	end
 
-	t = Terrain.create(grid, 400, 300, 4)
+	t = Terrain.create(grid, 200, 128)
 	t:draw()
 end
 
@@ -42,6 +42,7 @@ function love.quit()
   print("Thanks for playing! Come back soon!")
 end
 
+-- from Stack Overflow: http://stackoverflow.com/questions/1426954/split-string-in-lua by krsk9999
 function string:split(delimiter)
   local result = { }
   local from  = 1
