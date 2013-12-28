@@ -1,7 +1,9 @@
 require "isoTerrain"
 require "block"
 
-function love.draw()
+t = {}
+
+function love.load()
 	love.graphics.setBackgroundColor(100, 100, 100)
 
 	file = love.filesystem.newFile("grid.txt")
@@ -34,7 +36,12 @@ function love.draw()
 		end
 	end
 
+	file:close()
+
 	t = Terrain.create(grid, 200, 128)
+end
+
+function love.draw()
 	t:draw()
 end
 
