@@ -30,8 +30,9 @@ function Terrain.create(grid, x, y)
 end
 
 function Terrain:draw()	
-	self.selected = {selectedX, selectedY}
 	grid = self.grid 
+	self:clickCheckHeight() -- check if the currently selected block is actually overlapped by another
+	self.selected = {selectedX, selectedY}
 
 	-- set up default tile type
 	tile = love.graphics.newImage("grass.png")
@@ -88,11 +89,24 @@ function Terrain:draw()
 	love.graphics.pop()
 end
 
+function Terrain:clickCheckHeight()
+	diffX = table.getn(self.grid) - selectedX
+	diffY = table.getn(self.grid[1]) - selectedY
+	diff = math.min(diffX, diffY)
+
+	-- check if a tile overlaps the currently selected tile; will overlap if its height is equal to its x AND y distance from current
+	for i = 1, diff do
+		if self.grid[selectedX + i][selectedY + i].height == i then
+			selectedX = selectedX + i
+			selectedY = selectedY + i
+		end 
+	end
+end
+
 function love.mousepressed(x, y, button)
 	if button == "l" then
 		
 		-- from http://laserbrainstudios.com/2010/08/the-basics-of-isometric-programming/
-		-- TODO: take into account block height. Currently calculates from a height of 0
 		-- TODO: strongly consider switching height to 1 indexed to match everything else
 		x = x - (offsetX + BLOCK_WIDTH) 
 		y = y - offsetY + (BLOCK_HEIGHT / 2) 
@@ -101,6 +115,5 @@ function love.mousepressed(x, y, button)
   		TileY = math.floor((y / BLOCK_HEIGHT) - (x / BLOCK_WIDTH))
   		selectedX = TileY
   		selectedY = TileX + 1
-
     end
 end
