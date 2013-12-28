@@ -90,6 +90,11 @@ function Terrain:draw()
 end
 
 function Terrain:clickCheckHeight()
+
+  	-- make sure we don't get out of bounds results
+  	selectedX = math.clamp(selectedX, 1, table.getn(self.grid))
+  	selectedY = math.clamp(selectedY, 1, table.getn(self.grid[1]))
+
 	diffX = table.getn(self.grid) - selectedX
 	diffY = table.getn(self.grid[1]) - selectedY
 	diff = math.min(diffX, diffY)
@@ -99,9 +104,10 @@ function Terrain:clickCheckHeight()
 		if self.grid[selectedX + i][selectedY + i].height == i then
 			selectedX = selectedX + i
 			selectedY = selectedY + i
+			break
 		end 
 	end
-end
+end 
 
 function love.mousepressed(x, y, button)
 	if button == "l" then
@@ -113,7 +119,21 @@ function love.mousepressed(x, y, button)
 
 		TileX = math.floor((y / BLOCK_HEIGHT) + (x / BLOCK_WIDTH))
   		TileY = math.floor((y / BLOCK_HEIGHT) - (x / BLOCK_WIDTH))
+
   		selectedX = TileY
   		selectedY = TileX + 1
     end
+end
+
+
+-- Utility Functions
+
+-- from http://www.programmer-tutorials.com/lua-tutorial-clamp-number-inbetween-ranges/
+function math.clamp(input, min_val, max_val)
+	if input < min_val then
+		input = min_val
+	elseif input > max_val then
+		input = max_val
+	end
+	return input
 end
