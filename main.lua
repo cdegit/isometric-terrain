@@ -8,6 +8,8 @@ function love.load()
 	local grid = {}
 	t = Terrain.create(grid, 200, 128)
 	t:loadGrid("grid.txt")
+	t:addBlock(5, 6, BLOCK_TYPE_ROCK, 2)
+	t:addBlock(8, 1, BLOCK_TYPE_ROCK, 1)
 end
 
 function love.draw()

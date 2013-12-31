@@ -4,10 +4,10 @@ Block.__index = Block
 BLOCK_WIDTH = 64
 BLOCK_HEIGHT = 32
 
-function Block.create(type, height)
+function Block.create(blockType, height)
    local block = {}             -- our new object
    setmetatable(block,Block)  
-   block.type = type      -- initialize our object
+   block.type = blockType      -- initialize our object
    block.height = height
    return block
 end

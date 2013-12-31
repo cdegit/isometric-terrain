@@ -1,5 +1,6 @@
 require "block"
 
+BLOCK_TYPE_EMPTY = 0
 BLOCK_TYPE_GRASS = 1
 BLOCK_TYPE_ROCK = 2
 
@@ -45,15 +46,21 @@ function Terrain:draw()
 	for x = 1,table.getn(grid) do
 	   for y = 1,table.getn(grid[1]) do
 	   		block = grid[x][y]
+	   		
+	   		empty = false
+	    	
 	    	if block.type == BLOCK_TYPE_GRASS then
 	      		-- set image to be drawn
 	      		tile = love.graphics.newImage("grass.png")
 	    	elseif grid[x][y].type == BLOCK_TYPE_ROCK then
 	      		tile = love.graphics.newImage("dirt.png")
+	      	elseif grid[x][y].type == BLOCK_TYPE_EMPTY then
+	      		tile = love.graphics.newImage("empty.png")
+	      		empty = true
 	    	end
 
 	      	-- draw block
-	  		if grid[x][y].height > 1 then
+	  		if grid[x][y].height >= 1 then
 	  			-- draw blocks under top
 	  			-- store previous tile type
 	  			tempTile = tile 
@@ -77,7 +84,7 @@ function Terrain:draw()
 	   
 	  		-- if this block is selected, draw a white quad to indicate selection
 	  		-- TODO: animate, slowly flash
-	  		if x == self.selected[1] and y == self.selected[2] then
+	  		if x == self.selected[1] and y == self.selected[2] and empty == false then
 	  			love.graphics.push()
 	  			love.graphics.translate((y-x) * (tile:getWidth() / 2), ((x+y) * (tile:getHeight() / 4)) - ((tile:getHeight() / 2) * (table.getn(grid) / 2)) - (tile:getHeight() / 2)*grid[x][y].height)
 	  			love.graphics.quad("line", 0, (BLOCK_HEIGHT / 2), BLOCK_HEIGHT, 0, BLOCK_WIDTH, (BLOCK_HEIGHT / 2), BLOCK_HEIGHT, BLOCK_HEIGHT)
@@ -124,6 +131,33 @@ function Terrain:loadGrid(fileName)
 	self.grid = grid
 
 	file:close()
+end
+
+function Terrain:addBlock(x, y, blockType, height)
+	newGrid = {}
+	-- check if x and y are already within the bounds of the grid
+	if x <= table.getn(self.grid) and y <= table.getn(self.grid[1]) then
+			-- if this is the case, only replace the existing block if the height or type is different
+			if height ~= self.grid[x][y].height or blockType ~= self.grid[x][y].type then
+				self.grid[x][y] = Block.create(blockType, height)
+			end
+	else
+		-- add new columns
+		for gx = 1, math.max(table.getn(self.grid), x) do
+			newGrid[gx] = {}
+			for gy = 1, math.max(table.getn(self.grid[1]), y) do
+				if (gx <= table.getn(self.grid)) and (gy <= table.getn(self.grid[1])) then -- if exists already, just transfer
+					newGrid[gx][gy] = self.grid[gx][gy]
+				elseif gx == x and gy == y then -- if we're on the new block we want to add
+					newGrid[gx][gy] = Block.create(blockType, height)
+				else
+					newGrid[gx][gy] = Block.create(0, 0)
+				end
+			end
+		end
+		self.grid = newGrid
+	end
+	-- otherwise, add rows or columns to grid filled with empty blocks
 end
 
 function Terrain:clickCheckHeight()
