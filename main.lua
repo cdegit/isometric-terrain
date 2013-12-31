@@ -5,40 +5,9 @@ t = {}
 
 function love.load()
 	love.graphics.setBackgroundColor(100, 100, 100)
-
-	file = love.filesystem.newFile("grid.txt")
-	file:open("r")
-
 	local grid = {}
-
-	data = {}
-	splitData = {}
-
-	j = 1
-	for line in file:lines() do
-		data[j] = line
-		j = j + 1
-	end
-
-	for key, value in pairs(data) do
-		grid[key] = {}
-		splitData[key] = {}
-		splitData[key] = string.split(value, ",")
-
-		for k, v in pairs(splitData[key]) do
-			splitData[key][k] = {}
-			splitData[key][k] = string.split(v, " ")
-
-			for a, b in pairs(splitData[key][k]) do
-				bl = Block.create(tonumber(splitData[key][k][1]), tonumber(splitData[key][k][2])) 
-				grid[key][k] = bl
-			end
-		end
-	end
-
-	file:close()
-
 	t = Terrain.create(grid, 200, 128)
+	t:loadGrid("grid.txt")
 end
 
 function love.draw()

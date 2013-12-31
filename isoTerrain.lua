@@ -15,18 +15,19 @@ Terrain.__index = Terrain
 -- make an accompanying terrain creation tool
 -- that writes a file that can be read by the terrain manager and drawn in game
 function Terrain.create(grid, x, y)
-   local terr = {}             -- our new object
-   setmetatable(terr,Terrain)  -- make Account handle lookup
-   terr.x = x
-   terr.y = y
-   terr.grid = {}
-   terr.grid = grid
-   terr.selected = {}
+   	local terr = {}             -- our new object
+   	setmetatable(terr,Terrain)  -- make Account handle lookup
+   	terr.x = x
+   	terr.y = y
 
-   offsetX = x
-   offsetY = y - BLOCK_WIDTH
+   	terr.grid = {}
+   	terr.grid = grid
+   	terr.selected = {}
 
-   return terr
+   	offsetX = x
+   	offsetY = y - BLOCK_WIDTH
+
+   	return terr
 end
 
 function Terrain:draw()	
@@ -89,8 +90,46 @@ function Terrain:draw()
 	love.graphics.pop()
 end
 
-function Terrain:clickCheckHeight()
+function Terrain:loadGrid(fileName)
+	file = love.filesystem.newFile(fileName)
+	file:open("r")
 
+	grid = {}
+
+	data = {}
+	splitData = {}
+
+	j = 1
+	for line in file:lines() do
+		data[j] = line
+		j = j + 1
+	end
+
+	for key, value in pairs(data) do
+		grid[key] = {}
+		splitData[key] = {}
+		splitData[key] = string.split(value, ",")
+
+		for k, v in pairs(splitData[key]) do
+			splitData[key][k] = {}
+			splitData[key][k] = string.split(v, " ")
+
+			for a, b in pairs(splitData[key][k]) do
+				bl = Block.create(tonumber(splitData[key][k][1]), tonumber(splitData[key][k][2])) 
+				grid[key][k] = bl
+			end
+		end
+	end
+
+	self.grid = grid
+
+	file:close()
+end
+
+function Terrain:clickCheckHeight()
+	if table.getn(self.grid) == 0 then
+		return
+	end
   	-- make sure we don't get out of bounds results
   	selectedX = math.clamp(selectedX, 1, table.getn(self.grid))
   	selectedY = math.clamp(selectedY, 1, table.getn(self.grid[1]))
@@ -107,6 +146,22 @@ function Terrain:clickCheckHeight()
 			break
 		end 
 	end
+end
+
+function Terrain:rotate()
+	-- want to rotate the underlying array, then drawing should take care of everythin
+	-- may have to adjust mouse checking
+	newGrid = {}
+
+	for y = 1, table.getn(self.grid[1]) do
+		newGrid[y] = {}
+		for x = 1, table.getn(self.grid) do
+			newGrid[y][x] = self.grid[x][y]
+			-- except want it "reflected"
+			
+		end
+	end
+	self.grid = newGrid
 end 
 
 function love.mousepressed(x, y, button)
