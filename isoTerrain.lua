@@ -55,7 +55,6 @@ function Terrain:draw()
 	    	elseif grid[x][y].type == BLOCK_TYPE_ROCK then
 	      		tile = love.graphics.newImage("dirt.png")
 	      	elseif grid[x][y].type == BLOCK_TYPE_EMPTY then
-	      		tile = love.graphics.newImage("empty.png")
 	      		empty = true
 	    	end
 
@@ -77,20 +76,22 @@ function Terrain:draw()
 	  			tile = tempTile
 	  		end 
 
-	  		-- draw block
-	  		love.graphics.draw(tile,
+	  		if empty == false then
+	  			-- draw block
+	  			love.graphics.draw(tile,
 	            	((y-x) * (tile:getWidth() / 2)),
 	            	((x+y) * (tile:getHeight() / 4)) - ((tile:getHeight() / 2) * (table.getn(grid) / 2)) - (tile:getHeight() / 2)*grid[x][y].height)
 	   
-	  		-- if this block is selected, draw a white quad to indicate selection
-	  		-- TODO: animate, slowly flash
-	  		if x == self.selected[1] and y == self.selected[2] and empty == false then
-	  			love.graphics.push()
-	  			love.graphics.translate((y-x) * (tile:getWidth() / 2), ((x+y) * (tile:getHeight() / 4)) - ((tile:getHeight() / 2) * (table.getn(grid) / 2)) - (tile:getHeight() / 2)*grid[x][y].height)
-	  			love.graphics.quad("line", 0, (BLOCK_HEIGHT / 2), BLOCK_HEIGHT, 0, BLOCK_WIDTH, (BLOCK_HEIGHT / 2), BLOCK_HEIGHT, BLOCK_HEIGHT)
-	  			love.graphics.pop()
+	  			-- if this block is selected, draw a white quad to indicate selection
+	  			-- TODO: animate, slowly flash
+	  			if x == self.selected[1] and y == self.selected[2] then
+	  				love.graphics.push()
+	  				love.graphics.translate((y-x) * (tile:getWidth() / 2), ((x+y) * (tile:getHeight() / 4)) - ((tile:getHeight() / 2) * (table.getn(grid) / 2)) - (tile:getHeight() / 2)*grid[x][y].height)
+	  				love.graphics.quad("line", 0, (BLOCK_HEIGHT / 2), BLOCK_HEIGHT, 0, BLOCK_WIDTH, (BLOCK_HEIGHT / 2), BLOCK_HEIGHT, BLOCK_HEIGHT)
+	  				love.graphics.pop()
 
 				
+	  			end
 	  		end
 	   end
 	end
@@ -185,18 +186,32 @@ end
 function Terrain:rotate()
 	-- want to rotate the underlying array, then drawing should take care of everythin
 	-- may have to adjust mouse checking
-	newGrid = {}
+	-- self:gridRot()
 
-	for y = 1, table.getn(self.grid[1]) do
-		newGrid[y] = {}
-		for x = 1, table.getn(self.grid) do
-			newGrid[y][x] = self.grid[x][y]
-			-- except want it "reflected"
-			
+end 
+
+function Terrain:gridRot()
+	--[[
+	newGrid = {}
+	for i = 1, y do
+		newGrid[i] = {}
+		for j = 1, x do
+			newGrid[i][j] = 0 -- just so we have an array at all
 		end
 	end
-	self.grid = newGrid
-end 
+
+	for x = 1, table.getn(self.grid) do
+		for y = 1, table.getn(self.grid[1]) do
+			create a matrix containing x, y, 1
+			multiply that matrix by the rotation matrix
+			multiply by the translation matrix
+			--this result [tx ty] is the new location for the data in grid[x][y]
+			newGrid[tx][ty] = self.grid[x][y]
+		end
+	end
+
+	]]--
+end
 
 function love.mousepressed(x, y, button)
 	if button == "l" then

@@ -6,14 +6,15 @@ t = {}
 function love.load()
 	love.graphics.setBackgroundColor(100, 100, 100)
 	local grid = {}
-	t = Terrain.create(grid, 200, 128)
+	t = Terrain.create(grid, 300, 228)
 	t:loadGrid("grid.txt")
 	t:addBlock(5, 6, BLOCK_TYPE_ROCK, 2)
-	t:addBlock(8, 1, BLOCK_TYPE_ROCK, 1)
+	--t:addBlock(8, 1, BLOCK_TYPE_ROCK, 1)
 end
 
 function love.draw()
 	t:draw()
+	--t:rotate(math.pi/2)
 end
 
 function love.quit()
