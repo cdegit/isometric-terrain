@@ -15,6 +15,15 @@ end
 function love.draw()
 	t:draw()
 	--t:rotate(math.pi/2)
+  m1 = {{3, 1, 1}, {1, 1, 1}, {1, 1, 1}}
+  m2 = {2, 2, 4}
+  res = t:multiplyMatrices(m1, m2)
+
+  for i = 1, table.getn(res) do
+    love.graphics.print(res[i], 0, i * 10)
+  end
+
+
 end
 
 function love.quit()

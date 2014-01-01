@@ -213,6 +213,21 @@ function Terrain:gridRot()
 	]]--
 end
 
+function Terrain:multiplyMatrices(m1, m2)
+	result = {}
+	tempres = 0
+
+	for i = 1, table.getn(m1) do
+		for j = 1, table.getn(m1[1]) do
+			tempres = tempres + m1[i][j] * m2[j]
+		end
+		result[i] = tempres
+		tempres = 0
+	end
+
+	return result
+end
+
 function love.mousepressed(x, y, button)
 	if button == "l" then
 		
