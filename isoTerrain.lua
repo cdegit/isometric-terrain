@@ -134,6 +134,29 @@ function Terrain:loadGrid(fileName)
 	file:close()
 end
 
+-- saves instance's grid to a file with the given name
+-- this file is saved in the game's save directory 
+function Terrain:saveGrid(fileName)
+	file = love.filesystem.newFile(fileName)
+	file:open("w")
+	
+	for x = 1, table.getn(self.grid) do
+		for y = 1, table.getn(self.grid[1]) do
+			file:write(self.grid[x][y].type)
+			file:write(" ")
+			file:write(self.grid[x][y].height)
+			if y ~= table.getn(self.grid[1]) then
+				file:write(",")
+			end
+		end
+		if x ~= table.getn(self.grid) then
+			file:write("\n")
+		end
+	end
+	
+	file:close()
+end
+
 function Terrain:addBlock(x, y, blockType, height)
 	newGrid = {}
 	-- check if x and y are already within the bounds of the grid
@@ -264,4 +287,18 @@ function math.clamp(input, min_val, max_val)
 		input = max_val
 	end
 	return input
+end
+
+-- from Stack Overflow: http://stackoverflow.com/questions/1426954/split-string-in-lua by krsk9999
+function string:split(delimiter)
+  local result = { }
+  local from  = 1
+  local delim_from, delim_to = string.find( self, delimiter, from  )
+  while delim_from do
+    table.insert( result, string.sub( self, from , delim_from-1 ) )
+    from  = delim_to + 1
+    delim_from, delim_to = string.find( self, delimiter, from  )
+  end
+  table.insert( result, string.sub( self, from  ) )
+  return result
 end
