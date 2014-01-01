@@ -185,32 +185,40 @@ end
 
 function Terrain:rotate()
 	-- want to rotate the underlying array, then drawing should take care of everythin
-	-- may have to adjust mouse checking
-	-- self:gridRot()
+	self:gridRot()
 
 end 
 
 function Terrain:gridRot()
-	--[[
+	-- initialize the new grid so we have something to work with
 	newGrid = {}
-	for i = 1, y do
+	for i = 1, table.getn(self.grid[1]) do
 		newGrid[i] = {}
-		for j = 1, x do
-			newGrid[i][j] = 0 -- just so we have an array at all
+		for j = 1, table.getn(self.grid) do
+			newGrid[i][j] = 0 
 		end
 	end
 
 	for x = 1, table.getn(self.grid) do
 		for y = 1, table.getn(self.grid[1]) do
-			create a matrix containing x, y, 1
-			multiply that matrix by the rotation matrix
-			multiply by the translation matrix
-			--this result [tx ty] is the new location for the data in grid[x][y]
-			newGrid[tx][ty] = self.grid[x][y]
+			mat = {x, y, 1} -- matrix representing current index
+			rotMat = {{0, 1, 0}, {-1, 0, 0}, {0, 0, 1}} -- rotation matrix
+			res = self:multiplyMatrices(rotMat, mat) -- multiply the index matrix and the rotation matrix
+
+			-- this will leave you outside of the bounds of the array
+			-- use a translation matrix to return to the correct position
+
+			transMat = {{1, 0, 0}, {0, 1, table.getn(self.grid) + 1}, {0, 0, 1}}
+			res = self:multiplyMatrices(transMat, res)
+
+			tx = res[1] -- new x index
+			ty = res[2] -- new y index
+
+			newGrid[tx][ty] = self.grid[x][y] -- take the value from the original location in grid and put it into the new grid
 		end
 	end
 
-	]]--
+	self.grid = newGrid -- set the rotated grid to be the grid
 end
 
 function Terrain:multiplyMatrices(m1, m2)
@@ -228,6 +236,7 @@ function Terrain:multiplyMatrices(m1, m2)
 	return result
 end
 
+-- TODO: fix bug introduced by changing center of grid (adding new blocks)
 function love.mousepressed(x, y, button)
 	if button == "l" then
 		
