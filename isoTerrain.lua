@@ -1,9 +1,8 @@
 require "block"
 
-BLOCK_TYPE_EMPTY = 0
-BLOCK_TYPE_GRASS = 1
-BLOCK_TYPE_ROCK = 2
-
+BLOCKTYPE = {["empty"] = 0, ["grass"] = 1, ["rock"] = 2} -- allows you to easily create the new block based on name
+BLOCKFILE = {[1] = "grass.png", [2] = "dirt.png"}		 -- stores the file names for the blocks to be drawn
+ 
 selectedX = 0
 selectedY = 0
 
@@ -49,13 +48,11 @@ function Terrain:draw()
 	   		
 	   		empty = false
 	    	
-	    	if block.type == BLOCK_TYPE_GRASS then
-	      		-- set image to be drawn
-	      		tile = love.graphics.newImage("grass.png")
-	    	elseif grid[x][y].type == BLOCK_TYPE_ROCK then
-	      		tile = love.graphics.newImage("dirt.png")
-	      	elseif grid[x][y].type == BLOCK_TYPE_EMPTY then
+	   		if grid[x][y].type == BLOCKTYPE["empty"] then
 	      		empty = true
+	    	else 
+	    		local tempType = grid[x][y].type
+	    		tile = love.graphics.newImage(BLOCKFILE[tempType])
 	    	end
 
 	      	-- draw block
