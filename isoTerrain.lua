@@ -206,13 +206,8 @@ function Terrain:clickCheckHeight()
 	end
 end
 
-function Terrain:rotate()
-	-- want to rotate the underlying array, then drawing should take care of everythin
-	self:gridRot()
-
-end 
-
-function Terrain:gridRot()
+function Terrain:rotate(angle)
+	-- want to rotate the underlying array, then drawing should take care of everything
 	-- initialize the new grid so we have something to work with
 	newGrid = {}
 	for i = 1, table.getn(self.grid[1]) do
@@ -225,13 +220,23 @@ function Terrain:gridRot()
 	for x = 1, table.getn(self.grid) do
 		for y = 1, table.getn(self.grid[1]) do
 			mat = {x, y, 1} -- matrix representing current index
-			rotMat = {{0, 1, 0}, {-1, 0, 0}, {0, 0, 1}} -- rotation matrix
+			c = math.round(math.cos(math.pi/2))
+			s = math.round(math.sin(math.pi/2))
+
+			rotMat = {}
+			if (angle == "left") then
+				rotMat = {{c, s, 0}, {-s, c, 0}, {0, 0, 1}}
+				transMat = {{1, 0, 0}, {0, 1, table.getn(self.grid) + 1}, {0, 0, 1}}
+			elseif angle == "right" then
+				rotMat = {{c, -s, 0}, {s, c, 0}, {0, 0, 1}}
+				transMat = {{1, 0, table.getn(self.grid[1]) + 1}, {0, 1, 0}, {0, 0, 1}}
+			end
+
 			res = self:multiplyMatrices(rotMat, mat) -- multiply the index matrix and the rotation matrix
 
 			-- this will leave you outside of the bounds of the array
 			-- use a translation matrix to return to the correct position
 
-			transMat = {{1, 0, 0}, {0, 1, table.getn(self.grid) + 1}, {0, 0, 1}}
 			res = self:multiplyMatrices(transMat, res)
 
 			tx = res[1] -- new x index
@@ -287,6 +292,15 @@ function math.clamp(input, min_val, max_val)
 		input = max_val
 	end
 	return input
+end
+
+function math.round(input)
+	lower = math.floor(input)
+	if input - lower >= 0.5 then
+		return math.ceil(input)
+	else
+		return lower
+	end
 end
 
 -- from Stack Overflow: http://stackoverflow.com/questions/1426954/split-string-in-lua by krsk9999
