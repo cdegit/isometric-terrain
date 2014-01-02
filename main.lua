@@ -13,7 +13,7 @@ function love.load()
 
   --t:saveGrid("grid1.txt")
 
-  t:addBlockType("cube", "cube.png")
+  --t:addBlockType("cube", "cube.png")
 
   creatorLoad()
 end
@@ -32,6 +32,9 @@ function love.keypressed(key, unicode)
     -- try to add new block type with current name and fileName
     -- will have to have 2 "textboxes"
     --t:addBlock(1, 2, BLOCKTYPE["cube"], 1)
+
+    -- will need to add more checking and stuff but
+    t:addBlockType(nameTextbox.content, fileTextbox.content)
     return
   end
 
