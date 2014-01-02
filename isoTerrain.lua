@@ -181,6 +181,22 @@ function Terrain:addBlock(x, y, blockType, height)
 	-- otherwise, add rows or columns to grid filled with empty blocks
 end
 
+function Terrain:addBlockType(name, fileName)
+	-- first, check if file exists
+	-- provide user with an error if not
+
+	if love.filesystem.isFile(fileName) == false then
+		return
+	end
+
+	-- append to BLOCKTYPE and BLOCKFILE
+	-- number will be current size + 1
+
+	local number = table.getn(BLOCKFILE) + 1
+	BLOCKTYPE[name] = number
+	BLOCKFILE[number] = fileName
+end
+
 function Terrain:clickCheckHeight()
 	if table.getn(self.grid) == 0 then
 		return

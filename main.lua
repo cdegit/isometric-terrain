@@ -14,6 +14,8 @@ function love.load()
 
   --t:saveGrid("grid1.txt")
   userInput = "Type something!"
+
+  t:addBlockType("cube", "cube.png")
 end
 
 function love.draw()
@@ -27,6 +29,11 @@ function love.keypressed(key, unicode)
     t:rotate("left")
   elseif key == "right" then
     t:rotate("right")
+  elseif key == "return" then
+    -- try to add new block type with current name and fileName
+    -- will have to have 2 "textboxes"
+    --t:addBlock(1, 2, BLOCKTYPE["cube"], 1)
+    return
   end
 
   if unicode > 31 and unicode < 127 then
