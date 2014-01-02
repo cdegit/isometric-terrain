@@ -3,7 +3,6 @@ require "block"
 require "isoCreator"
 
 t = {}
-userInput = ""
 
 function love.load()
 	love.graphics.setBackgroundColor(100, 100, 100)
@@ -13,15 +12,15 @@ function love.load()
 	t:addBlock(5, 6, BLOCKTYPE["rock"], 2)
 
   --t:saveGrid("grid1.txt")
-  userInput = "Type something!"
 
   t:addBlockType("cube", "cube.png")
+
+  creatorLoad()
 end
 
 function love.draw()
 	t:draw()
-
-  love.graphics.print(userInput, 0, 40)
+  drawTextboxes()
 end
 
 function love.keypressed(key, unicode)
@@ -37,8 +36,17 @@ function love.keypressed(key, unicode)
   end
 
   if unicode > 31 and unicode < 127 then
-    userInput = userInput .. string.char(unicode)
+    if selectedTextbox ~= nil then
+      selectedTextbox.content = selectedTextbox.content .. string.char(unicode)
+    end
   end
+end
+
+function love.mousepressed(x, y, button)
+  if button == "l" then
+    t:selectTileFromMouse(x, y)
+    creatorMousepressed(x, y)
+    end
 end
 
 function love.quit()

@@ -16,7 +16,7 @@ Terrain.__index = Terrain
 -- that writes a file that can be read by the terrain manager and drawn in game
 function Terrain.create(grid, x, y)
    	local terr = {}             -- our new object
-   	setmetatable(terr,Terrain)  -- make Account handle lookup
+   	setmetatable(terr,Terrain)  -- make Terrain handle lookup
    	terr.x = x
    	terr.y = y
 
@@ -278,9 +278,7 @@ function Terrain:multiplyMatrices(m1, m2)
 end
 
 -- TODO: fix bug introduced by changing center of grid (adding new blocks)
-function love.mousepressed(x, y, button)
-	if button == "l" then
-		
+function Terrain:selectTileFromMouse(x, y)
 		-- from http://laserbrainstudios.com/2010/08/the-basics-of-isometric-programming/
 		-- TODO: strongly consider switching height to 1 indexed to match everything else
 		x = x - (offsetX + BLOCK_WIDTH) 
@@ -291,9 +289,7 @@ function love.mousepressed(x, y, button)
 
   		selectedX = TileY
   		selectedY = TileX + 1
-    end
 end
-
 
 -- Utility Functions
 
