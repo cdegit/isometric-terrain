@@ -1,13 +1,7 @@
 require "block"
 
-BLOCKTYPE = {["empty"] = 0, ["grass"] = 1, ["rock"] = 2} -- allows you to easily create the new block based on name
-BLOCKFILE = {[1] = "grass.png", [2] = "dirt.png"}		 -- stores the file names for the blocks to be drawn
- 
-selectedX = 0
-selectedY = 0
-
-offsetX = 0
-offsetY = 0
+BLOCKTYPE = {["empty"] = 0, ["grass"] = 1, ["rock"] = 2, ["blueprint"] = 3} -- allows you to easily create the new block based on name
+BLOCKFILE = {[1] = "grass.png", [2] = "dirt.png", [3] = "blueprint.png"}		 -- stores the file names for the blocks to be drawn
 
 Terrain = {}
 Terrain.__index = Terrain
@@ -22,18 +16,14 @@ function Terrain.create(grid, x, y)
 
    	terr.grid = {}
    	terr.grid = grid
-   	terr.selected = {}
-
-   	offsetX = x
-   	offsetY = y - BLOCK_WIDTH
+   	terr.selected = {0, 0}
+   	terr.offset = {x, y - BLOCK_WIDTH}
 
    	return terr
 end
 
 function Terrain:draw()	
 	grid = self.grid 
-	self:clickCheckHeight() -- check if the currently selected block is actually overlapped by another
-	self.selected = {selectedX, selectedY}
 
 	-- set up default tile type
 	tile = love.graphics.newImage("grass.png")
@@ -162,9 +152,11 @@ function Terrain:addBlock(x, y, blockType, height)
 			if height ~= self.grid[x][y].height or blockType ~= self.grid[x][y].type then
 				self.grid[x][y] = Block.create(blockType, height)
 			end
-	else
+	end
+
+	-- Old code when adding new columns and rows was allowed
 		-- add new columns
-		for gx = 1, math.max(table.getn(self.grid), x) do
+		--[[for gx = 1, math.max(table.getn(self.grid), x) do
 			newGrid[gx] = {}
 			for gy = 1, math.max(table.getn(self.grid[1]), y) do
 				if (gx <= table.getn(self.grid)) and (gy <= table.getn(self.grid[1])) then -- if exists already, just transfer
@@ -177,8 +169,7 @@ function Terrain:addBlock(x, y, blockType, height)
 			end
 		end
 		self.grid = newGrid
-	end
-	-- otherwise, add rows or columns to grid filled with empty blocks
+		self:recenter() ]]--
 end
 
 function Terrain:addBlockType(name, fileName)
@@ -202,18 +193,18 @@ function Terrain:clickCheckHeight()
 		return
 	end
   	-- make sure we don't get out of bounds results
-  	selectedX = math.clamp(selectedX, 1, table.getn(self.grid))
-  	selectedY = math.clamp(selectedY, 1, table.getn(self.grid[1]))
+  	self.selected[1] = math.clamp(self.selected[1], 1, table.getn(self.grid))
+  	self.selected[2] = math.clamp(self.selected[2], 1, table.getn(self.grid[1]))
 
-	diffX = table.getn(self.grid) - selectedX
-	diffY = table.getn(self.grid[1]) - selectedY
+	diffX = table.getn(self.grid) - self.selected[1]
+	diffY = table.getn(self.grid[1]) - self.selected[2]
 	diff = math.min(diffX, diffY)
 
 	-- check if a tile overlaps the currently selected tile; will overlap if its height is equal to its x AND y distance from current
 	for i = 1, diff do
-		if self.grid[selectedX + i][selectedY + i].height == i then
-			selectedX = selectedX + i
-			selectedY = selectedY + i
+		if self.grid[self.selected[1] + i][self.selected[2] + i].height == i then
+			self.selected[1] = self.selected[1] + i
+			self.selected[2] = self.selected[2] + i
 			break
 		end 
 	end
@@ -281,14 +272,17 @@ end
 function Terrain:selectTileFromMouse(x, y)
 		-- from http://laserbrainstudios.com/2010/08/the-basics-of-isometric-programming/
 		-- TODO: strongly consider switching height to 1 indexed to match everything else
-		x = x - (offsetX + BLOCK_WIDTH) 
-		y = y - offsetY + (BLOCK_HEIGHT / 2) 
+		x = x - (self.offset[1] + BLOCK_WIDTH) 
+		y = y - self.offset[2] + (BLOCK_HEIGHT / 2) 
 
 		TileX = math.floor((y / BLOCK_HEIGHT) + (x / BLOCK_WIDTH))
   		TileY = math.floor((y / BLOCK_HEIGHT) - (x / BLOCK_WIDTH))
 
   		selectedX = TileY
   		selectedY = TileX + 1
+
+  		self.selected = {TileY, TileX + 1}
+  		self:clickCheckHeight()
 end
 
 -- Utility Functions

@@ -6,8 +6,9 @@ t = {}
 
 function love.load()
 	love.graphics.setBackgroundColor(100, 100, 100)
-	local grid = {}
+	local grid = {{}}
 	t = Terrain.create(grid, 300, 228)
+
 	t:loadGrid("grid1.txt")
 	t:addBlock(5, 6, BLOCKTYPE["rock"], 2)
 
@@ -19,8 +20,9 @@ function love.load()
 end
 
 function love.draw()
-	t:draw()
+	--t:draw()
   drawTextboxes()
+  drawTerrains()
 end
 
 function love.keypressed(key, unicode)
@@ -30,26 +32,18 @@ function love.keypressed(key, unicode)
     t:rotate("right")
   elseif key == "return" then
     -- try to add new block type with current name and fileName
-    -- will have to have 2 "textboxes"
-    --t:addBlock(1, 2, BLOCKTYPE["cube"], 1)
-
     -- will need to add more checking and stuff but
     t:addBlockType(nameTextbox.content, fileTextbox.content)
     return
   end
 
-  if unicode > 31 and unicode < 127 then
-    if selectedTextbox ~= nil then
-      selectedTextbox.content = selectedTextbox.content .. string.char(unicode)
-    end
-  end
+  creatorKeypressed(key, unicode)
 end
 
 function love.mousepressed(x, y, button)
   if button == "l" then
-    t:selectTileFromMouse(x, y)
     creatorMousepressed(x, y)
-    end
+  end
 end
 
 function love.quit()
