@@ -112,9 +112,14 @@ function Terrain:loadGrid(fileName)
 			for a, b in pairs(splitData[key][k]) do
 				bl = Block.create(tonumber(splitData[key][k][1]), tonumber(splitData[key][k][2])) 
 				grid[key][k] = bl
+
+				-- key and k are x and y respectively, so look at those
 			end
 		end
 	end
+
+	-- TODO: ensure that the grid built is always of equal width and height to avoid hell bug
+	-- Or fix hell bug
 
 	self.grid = grid
 

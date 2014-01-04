@@ -67,11 +67,25 @@ end
 -- simple function to generate a uniform grid
 function makeGrid(type, width, height)
   local grid = {}
-  for x = 1, width do
+  yempty = 0
+  xempty = 0
+
+  if width > height then
+    yempty = width - height
+  elseif height > width then
+    xempty = height - width
+  end
+
+  for x = 1, width + xempty do
     grid[x] = {}
-    for y = 1, height do
-      grid[x][y] = Block.create(BLOCKTYPE[type], 0)
+    for y = 1, height + yempty do
+      if y > height or x > width then
+        grid[x][y] = Block.create(BLOCKTYPE["empty"], 0)
+      else
+        grid[x][y] = Block.create(BLOCKTYPE[type], 0)
+      end
     end
   end
+
   return grid
 end
