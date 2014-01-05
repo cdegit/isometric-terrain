@@ -150,9 +150,8 @@ function Terrain:saveGrid(fileName)
 end
 
 function Terrain:addBlock(x, y, blockType, height)
-	newGrid = {}
 	-- check if x and y are already within the bounds of the grid
-	if x <= table.getn(self.grid) and y <= table.getn(self.grid[1]) then
+	if x >= 1 and x <= table.getn(self.grid) and y >= 1 and y <= table.getn(self.grid[1]) then
 			-- if this is the case, only replace the existing block if the height or type is different
 			if height ~= self.grid[x][y].height or blockType ~= self.grid[x][y].type then
 				self.grid[x][y] = Block.create(blockType, height)
@@ -175,6 +174,12 @@ function Terrain:addBlock(x, y, blockType, height)
 		end
 		self.grid = newGrid
 		self:recenter() ]]--
+end
+
+function Terrain:removeBlock(x, y)
+	if x >= 1 and x <= table.getn(self.grid) and y >= 1 and y <= table.getn(self.grid[1]) then
+		self.grid[x][y] = Block.create(BLOCKTYPE["empty"], 0)
+	end
 end
 
 function Terrain:addBlockType(name, fileName)

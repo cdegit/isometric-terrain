@@ -42,15 +42,18 @@ function drawTerrains()
   blueprint:draw()
 end
 
-function creatorMousepressed(x, y)
-	nameTextbox:mousepressed(x, y)
+function creatorMousepressed(x, y, button)
+  nameTextbox:mousepressed(x, y)
 	fileTextbox:mousepressed(x, y)
-
 	blueprint:selectTileFromMouse(x, y)
 
-	if blueprint.selected[1] >= 1 and blueprint.selected[2] >= 1 then
+  if button == "l" then 
       newTerrain:addBlock(blueprint.selected[1], blueprint.selected[2], BLOCKTYPE["grass"], 0)
-    end
+  else
+      newTerrain:removeBlock(blueprint.selected[1], blueprint.selected[2])
+  end
+
+  -- for each block, check if mouse is within its bounds... will want to use code form isoTerrain actually I guess
 end
 
 function creatorKeypressed(key, unicode)
@@ -73,7 +76,6 @@ function drawTextboxes()
 	nameTextbox:draw()
 	fileTextbox:draw()
 end
-
 
 function drawBlockTypes()
   love.graphics.push()

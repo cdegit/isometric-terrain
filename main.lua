@@ -3,6 +3,7 @@ require "block"
 require "isoCreator"
 
 t = {}
+alert = ""
 
 function love.load()
 	love.graphics.setBackgroundColor(100, 100, 100)
@@ -22,6 +23,7 @@ end
 function love.draw()
 	--t:draw()
   creatorDraw()
+  love.graphics.print(alert, 0, 100)
 end
 
 function love.keypressed(key, unicode)
@@ -40,9 +42,9 @@ function love.keypressed(key, unicode)
 end
 
 function love.mousepressed(x, y, button)
-  if button == "l" then
-    creatorMousepressed(x, y)
-  end
+  --if button == "l" then
+    creatorMousepressed(x, y, button)
+  --end
 end
 
 function love.quit()
