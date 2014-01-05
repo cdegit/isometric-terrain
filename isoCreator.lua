@@ -5,6 +5,7 @@ require "textbox"
 -- once clicked, draw checkboxes and check if they are clicked
 
 -- TODO: make into proper class, more independant of main
+-- TODO: display and allow selection of a tile type
 
 nameTextbox = {}
 
@@ -15,6 +16,9 @@ selectedTextbox = nil
 textboxX = 500
 textboxY = 20
 
+blockTypesX = 0
+blockTypesY = 0
+
 blueprint = {}
 newTerrain = {}
 
@@ -23,7 +27,13 @@ function creatorLoad()
 	fileTextbox = Textbox.create("File Name: ", textboxX, textboxY + 50)
 
 	blueprint = Terrain.create(makeGrid("blueprint", 7, 7), 300, 228)
-  	newTerrain = Terrain.create(makeGrid("empty", 7, 7), 300, 228)
+  newTerrain = Terrain.create(makeGrid("empty", 7, 7), 300, 228)
+end
+
+function creatorDraw()
+  drawTextboxes()
+  drawTerrains()
+  drawBlockTypes()
 end
 
 -- draws 2 terrains: the blueprint terrain and the actual terrain being built
@@ -62,6 +72,19 @@ end
 function drawTextboxes()
 	nameTextbox:draw()
 	fileTextbox:draw()
+end
+
+
+function drawBlockTypes()
+  love.graphics.push()
+  love.graphics.translate(blockTypesX, blockTypesY)
+
+  for k, v in pairs(BLOCKFILE) do
+    local block = love.graphics.newImage(v)
+    love.graphics.draw(block, BLOCK_WIDTH*(k-1), 0)
+  end
+
+  love.graphics.pop()
 end
 
 -- simple function to generate a uniform grid

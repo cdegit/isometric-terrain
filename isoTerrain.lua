@@ -198,8 +198,14 @@ function Terrain:clickCheckHeight()
 		return
 	end
   	-- make sure we don't get out of bounds results
-  	self.selected[1] = math.clamp(self.selected[1], 1, table.getn(self.grid))
-  	self.selected[2] = math.clamp(self.selected[2], 1, table.getn(self.grid[1]))
+  	if self.selected[1] < 1 or self.selected[1] > table.getn(self.grid) then
+  		return
+  	elseif self.selected[2] < 1 or self.selected[2] > table.getn(self.grid[1]) then
+  		return
+  	end
+  	
+  	--self.selected[1] = math.clamp(self.selected[1], 1, table.getn(self.grid))
+  	--self.selected[2] = math.clamp(self.selected[2], 1, table.getn(self.grid[1]))
 
 	diffX = table.getn(self.grid) - self.selected[1]
 	diffY = table.getn(self.grid[1]) - self.selected[2]

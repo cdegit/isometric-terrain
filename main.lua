@@ -21,8 +21,7 @@ end
 
 function love.draw()
 	--t:draw()
-  drawTextboxes()
-  drawTerrains()
+  creatorDraw()
 end
 
 function love.keypressed(key, unicode)
