@@ -294,8 +294,8 @@ function Terrain:selectTileFromMouse(x, y)
 		TileX = math.floor((y / BLOCK_HEIGHT) + (x / BLOCK_WIDTH))
   		TileY = math.floor((y / BLOCK_HEIGHT) - (x / BLOCK_WIDTH))
 
-  		selectedX = TileY
-  		selectedY = TileX + 1
+  		--selectedX = TileY
+  		--selectedY = TileX + 1
 
   		self.selected = {TileY, TileX + 1}
   		self:clickCheckHeight()

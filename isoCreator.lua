@@ -19,6 +19,8 @@ textboxY = 20
 blockTypesX = 0
 blockTypesY = 0
 
+currentType = BLOCKTYPE["grass"] -- default type when creating blocks
+
 blueprint = {}
 newTerrain = {}
 
@@ -43,12 +45,13 @@ function drawTerrains()
 end
 
 function creatorMousepressed(x, y, button)
+  clickBlockTypes(x, y)
   nameTextbox:mousepressed(x, y)
 	fileTextbox:mousepressed(x, y)
 	blueprint:selectTileFromMouse(x, y)
 
   if button == "l" then 
-      newTerrain:addBlock(blueprint.selected[1], blueprint.selected[2], BLOCKTYPE["grass"], 0)
+      newTerrain:addBlock(blueprint.selected[1], blueprint.selected[2], currentType, 0)
   else
       newTerrain:removeBlock(blueprint.selected[1], blueprint.selected[2])
   end
@@ -84,9 +87,33 @@ function drawBlockTypes()
   for k, v in pairs(BLOCKFILE) do
     local block = love.graphics.newImage(v)
     love.graphics.draw(block, BLOCK_WIDTH*(k-1), 0)
+
+    if k == currentType then
+      local width = love.graphics.getLineWidth()
+      local r, g, b, a = love.graphics.getColor()
+
+      love.graphics.setLineWidth(3)
+      love.graphics.setColor(255, 255, 255)
+
+      love.graphics.line(BLOCK_WIDTH*(k-1), 70, BLOCK_WIDTH*k, 70)
+
+      love.graphics.setLineWidth(width)
+      love.graphics.setColor(r, g, b, a)
+    end
   end
 
   love.graphics.pop()
+end
+
+function clickBlockTypes(x, y)
+ -- 62 x 66
+ for k,v in pairs(BLOCKFILE) do
+  if x >= blockTypesX + BLOCK_WIDTH*(k-1) and x <= blockTypesX + BLOCK_WIDTH*k then
+    if y >= blockTypesY and y <= blockTypesY + 66 then
+      currentType = k
+    end
+  end
+ end
 end
 
 -- simple function to generate a uniform grid
