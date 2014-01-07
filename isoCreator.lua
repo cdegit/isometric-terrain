@@ -24,6 +24,8 @@ currentType = BLOCKTYPE["grass"] -- default type when creating blocks
 blueprint = {}
 newTerrain = {}
 
+creatingBlock = false
+
 function creatorLoad()
 	nameTextbox = Textbox.create("Type Name: ", textboxX, textboxY)
 	fileTextbox = Textbox.create("File Name: ", textboxX, textboxY + 50)
@@ -36,6 +38,10 @@ function creatorDraw()
   drawTextboxes()
   drawTerrains()
   drawBlockTypes()
+
+  if creatingBlock then
+    updateBlockHeight()
+  end
 end
 
 -- draws 2 terrains: the blueprint terrain and the actual terrain being built
@@ -51,12 +57,38 @@ function creatorMousepressed(x, y, button)
 	blueprint:selectTileFromMouse(x, y)
 
   if button == "l" then 
+      creatingBlock = true
       newTerrain:addBlock(blueprint.selected[1], blueprint.selected[2], currentType, 0)
   else
+      creatingBlock = false
       newTerrain:removeBlock(blueprint.selected[1], blueprint.selected[2])
   end
+end
 
-  -- for each block, check if mouse is within its bounds... will want to use code form isoTerrain actually I guess
+function updateBlockHeight()
+  -- get original height from blueprint.selected
+  -- for every amount greater than the height by BLOCK_HEIGHT
+  -- increment height of block
+  -- on release, stop changing it
+  local y = love.mouse.getY()
+  local bx = blueprint.selected[1]
+  local by = blueprint.selected[2]
+
+-- need to take into account offset
+  local blockY = blueprint.y + (bx+by) * (BLOCK_IMGHEIGHT / 4) - ((BLOCK_IMGHEIGHT / 2) * (table.getn(blueprint.grid) / 2)) - (BLOCK_IMGHEIGHT / 2)*0
+
+  local height = math.floor((blockY - y) / BLOCK_HEIGHT)
+
+  -- restrict to positive height only
+  if height < 0 then
+    height = 0
+  end
+
+  newTerrain:addBlock(blueprint.selected[1], blueprint.selected[2], currentType, height)
+end
+
+function creatorMousereleased(x, y, button)
+  creatingBlock = false
 end
 
 function creatorKeypressed(key, unicode)
@@ -101,6 +133,8 @@ function drawBlockTypes()
       love.graphics.setColor(r, g, b, a)
     end
   end
+
+  
 
   love.graphics.pop()
 end

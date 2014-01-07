@@ -3,6 +3,7 @@ Block.__index = Block
 
 BLOCK_WIDTH = 64
 BLOCK_HEIGHT = 32
+BLOCK_IMGHEIGHT = 66
 
 function Block.create(blockType, height)
    local block = {}             -- our new object

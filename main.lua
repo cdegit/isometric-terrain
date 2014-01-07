@@ -47,6 +47,10 @@ function love.mousepressed(x, y, button)
   --end
 end
 
+function love.mousereleased(x, y, button)
+  creatorMousereleased(x, y, button)
+end 
+
 function love.quit()
   print("Thanks for playing! Come back soon!")
 end
