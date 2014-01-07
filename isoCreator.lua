@@ -26,6 +26,8 @@ newTerrain = {}
 
 creatingBlock = false
 
+blueprintVisible = true
+
 function creatorLoad()
 	nameTextbox = Textbox.create("Type Name: ", textboxX, textboxY)
 	fileTextbox = Textbox.create("File Name: ", textboxX, textboxY + 50)
@@ -47,7 +49,9 @@ end
 -- draws 2 terrains: the blueprint terrain and the actual terrain being built
 function drawTerrains()
   newTerrain:draw()
-  blueprint:draw()
+  if blueprintVisible then
+    blueprint:draw()
+  end
 end
 
 function creatorMousepressed(x, y, button)

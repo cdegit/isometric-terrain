@@ -29,8 +29,14 @@ end
 function love.keypressed(key, unicode)
   if key == "left" then
     t:rotate("left")
+    blueprint:rotate("left")
+    newTerrain:rotate("left")
   elseif key == "right" then
     t:rotate("right")
+    blueprint:rotate("right")
+    newTerrain:rotate("right")
+  elseif key == "down" then
+    blueprintVisible = not blueprintVisible
   elseif key == "return" then
     -- try to add new block type with current name and fileName
     -- will need to add more checking and stuff but
