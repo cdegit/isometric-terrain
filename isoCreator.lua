@@ -115,6 +115,7 @@ end
 function drawBlockTypes()
   love.graphics.push()
   love.graphics.translate(blockTypesX, blockTypesY)
+  love.graphics.scale(0.5, 0.5)
 
   for k, v in pairs(BLOCKFILE) do
     local block = love.graphics.newImage(v)
@@ -134,16 +135,14 @@ function drawBlockTypes()
     end
   end
 
-  
-
   love.graphics.pop()
 end
 
 function clickBlockTypes(x, y)
  -- 62 x 66
  for k,v in pairs(BLOCKFILE) do
-  if x >= blockTypesX + BLOCK_WIDTH*(k-1) and x <= blockTypesX + BLOCK_WIDTH*k then
-    if y >= blockTypesY and y <= blockTypesY + 66 then
+  if x >= blockTypesX + BLOCK_WIDTH*(k-1)/2 and x <= blockTypesX + BLOCK_WIDTH*k then
+    if y >= blockTypesY and y <= blockTypesY + BLOCK_IMGHEIGHT/2 then
       currentType = k
     end
   end
