@@ -135,18 +135,29 @@ function drawBlockTypes()
     end
   end
 
+  local add = love.graphics.newImage("addnew.png")
+  love.graphics.draw(add, table.getn(BLOCKFILE) * BLOCK_WIDTH, 0)
+
   love.graphics.pop()
 end
 
 function clickBlockTypes(x, y)
- -- 62 x 66
  for k,v in pairs(BLOCKFILE) do
-  if x >= blockTypesX + BLOCK_WIDTH*(k-1)/2 and x <= blockTypesX + BLOCK_WIDTH*k then
+  if x >= blockTypesX + BLOCK_WIDTH*(k-1)/2 and x <= blockTypesX + BLOCK_WIDTH*k/2 then
     if y >= blockTypesY and y <= blockTypesY + BLOCK_IMGHEIGHT/2 then
       currentType = k
     end
   end
  end
+
+ -- if click on the add new button
+  if x >= blockTypesX + BLOCK_WIDTH*table.getn(BLOCKFILE)/2 and x <= blockTypesX + BLOCK_WIDTH*table.getn(BLOCKFILE) then
+    if y >= blockTypesY and y <= blockTypesY + BLOCK_IMGHEIGHT/2 then
+      -- TODO: open dialog to add a new block type
+      -- for now, add the cube type
+      newTerrain:addBlockType("cube", "cube.png")
+    end
+  end
 end
 
 -- simple function to generate a uniform grid
