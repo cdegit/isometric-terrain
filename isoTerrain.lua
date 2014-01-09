@@ -17,7 +17,6 @@ function Terrain.create(grid, x, y)
    	terr.grid = {}
    	terr.grid = grid
    	terr.selected = {0, 0}
-   	terr.offset = {x, y - BLOCK_WIDTH}
 
    	return terr
 end
@@ -160,7 +159,8 @@ function Terrain:addBlock(x, y, blockType, height)
 
 	-- Old code when adding new columns and rows was allowed
 		-- add new columns
-		--[[for gx = 1, math.max(table.getn(self.grid), x) do
+		--[[local newGrid = {}
+		for gx = 1, math.max(table.getn(self.grid), x) do
 			newGrid[gx] = {}
 			for gy = 1, math.max(table.getn(self.grid[1]), y) do
 				if (gx <= table.getn(self.grid)) and (gy <= table.getn(self.grid[1])) then -- if exists already, just transfer
@@ -173,7 +173,7 @@ function Terrain:addBlock(x, y, blockType, height)
 			end
 		end
 		self.grid = newGrid
-		self:recenter() ]]--
+		--self:recenter() ]]
 end
 
 function Terrain:removeBlock(x, y)
@@ -269,6 +269,12 @@ function Terrain:rotate(angle)
 	self.grid = newGrid -- set the rotated grid to be the grid
 end
 
+function Terrain:translate(xDist, yDist)
+	-- check to make sure we haven't translated too far. Don't want to be able to let the map off of the screen entirely, regardless of size.
+	self.x = self.x + xDist
+	self.y = self.y + yDist
+end
+
 function Terrain:multiplyMatrices(m1, m2)
 	result = {}
 	tempres = 0
@@ -288,14 +294,11 @@ end
 function Terrain:selectTileFromMouse(x, y)
 		-- from http://laserbrainstudios.com/2010/08/the-basics-of-isometric-programming/
 		-- TODO: strongly consider switching height to 1 indexed to match everything else
-		x = x - (self.offset[1] + BLOCK_WIDTH) 
-		y = y - self.offset[2] + (BLOCK_HEIGHT / 2) 
+		x = x - (self.x + BLOCK_WIDTH) 
+		y = y - (self.y - BLOCK_WIDTH) + (BLOCK_HEIGHT / 2) 
 
 		TileX = math.floor((y / BLOCK_HEIGHT) + (x / BLOCK_WIDTH))
   		TileY = math.floor((y / BLOCK_HEIGHT) - (x / BLOCK_WIDTH))
-
-  		--selectedX = TileY
-  		--selectedY = TileX + 1
 
   		self.selected = {TileY, TileX + 1}
   		self:clickCheckHeight()
