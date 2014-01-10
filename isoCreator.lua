@@ -19,6 +19,12 @@ textboxY = 20
 blockTypesX = 0
 blockTypesY = 0
 
+rotateButtonsX = 650
+rotateButtonsY = 130
+
+rotL = love.graphics.newImage("rotateLeft.png")
+rotR = love.graphics.newImage("rotateRight.png")
+
 currentType = BLOCKTYPE["grass"] -- default type when creating blocks
 
 blueprint = {}
@@ -40,6 +46,7 @@ function creatorDraw()
   drawTextboxes()
   drawTerrains()
   drawBlockTypes()
+  drawRotateButtons()
 
   if creatingBlock then
     updateBlockHeight()
@@ -67,6 +74,8 @@ function creatorMousepressed(x, y, button)
       creatingBlock = false
       newTerrain:removeBlock(blueprint.selected[1], blueprint.selected[2])
   end
+
+  clickRotateButtons(x, y)
 end
 
 function updateBlockHeight()
@@ -109,6 +118,32 @@ end
 
 function addBlockTypeClicked()
 
+end
+
+function drawRotateButtons()
+  love.graphics.push()
+  love.graphics.translate(rotateButtonsX, rotateButtonsY)
+  love.graphics.draw(rotL, 0, 0)
+  love.graphics.draw(rotR, rotL:getWidth(), 0)
+  love.graphics.pop()
+end
+
+function clickRotateButtons(x, y)
+  -- y is shared, so check that first
+  if y >= rotateButtonsY and y <= rotateButtonsY + rotL:getHeight() then
+
+    -- if clicking rotL
+    if x >= rotateButtonsX and x <= rotateButtonsX + rotL:getWidth() then
+      blueprint:rotate("left")
+      newTerrain:rotate("left")
+    end
+
+    -- if clicking rotR
+     if x >= rotateButtonsX + rotL:getWidth() and x <= rotateButtonsX + (rotL:getWidth() * 2) then
+      blueprint:rotate("right")
+      newTerrain:rotate("right")
+    end   
+  end
 end
 
 function drawTextboxes()
