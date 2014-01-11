@@ -187,7 +187,7 @@ function Terrain:addBlockType(name, fileName)
 	-- provide user with an error if not
 
 	if love.filesystem.isFile(fileName) == false then
-		return
+		return false
 	end
 
 	-- append to BLOCKTYPE and BLOCKFILE
@@ -196,6 +196,8 @@ function Terrain:addBlockType(name, fileName)
 	local number = table.getn(BLOCKFILE) + 1
 	BLOCKTYPE[name] = number
 	BLOCKFILE[number] = fileName
+
+	return true
 end
 
 function Terrain:clickCheckHeight()

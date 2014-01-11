@@ -172,18 +172,33 @@ function drawTextboxes()
 	nameTextbox:draw()
 	fileTextbox:draw()
 
-  -- draw submit button
-  love.graphics.rectangle("fill", textboxX + (165/2), textboxY + 100, 60, 25)
+  -- draw add and close buttons
+  love.graphics.rectangle("fill", textboxX + 140, textboxY + 100, 60, 25)
+  love.graphics.rectangle("fill", textboxX + 30, textboxY + 100, 60, 25)
 
   love.graphics.setColor(0, 0, 0)
-  love.graphics.print("Add", textboxX + (195/2), textboxY + 106)
+  love.graphics.print("Add", textboxX + 158, textboxY + 106)
+  love.graphics.print("Close", textboxX + 43, textboxY + 106)
   love.graphics.setColor(r, g, b, a)
+
 end
 
 function clickAddTypeSubmit(x, y) 
-  if x >= textboxX + (165/2) and x <= textboxX + (165/2) + 60 then
-    if y >= textboxY + 100 and y <= textboxY + 125 then
-      newTerrain:addBlockType(nameTextbox.content, fileTextbox.content)
+  if y >= textboxY + 100 and y <= textboxY + 125 then
+    -- if add button clicked
+    if x >= textboxX + 140 and x <= textboxX + 200 then
+      if newTerrain:addBlockType(nameTextbox.content, fileTextbox.content) then
+        addBlockTypeVisible = false
+        nameTextbox.content = ""
+        fileTextbox.content = ""
+        alert = "File added successfully!"
+      else
+        -- report error to the user and prompt them to try again
+        alert = "Couldn't find a file with this name. Please try again."
+      end
+    end
+
+    if x >= textboxX + 30 and x <= textboxX + 90 then
       addBlockTypeVisible = false
       nameTextbox.content = ""
       fileTextbox.content = ""
