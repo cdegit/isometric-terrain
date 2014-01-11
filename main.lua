@@ -52,7 +52,8 @@ function love.keypressed(key, unicode)
   elseif key == "return" then
     -- try to add new block type with current name and fileName
     -- will need to add more checking and stuff but
-    t:addBlockType(nameTextbox.content, fileTextbox.content)
+    --newTerrain:addBlockType(nameTextbox.content, fileTextbox.content)
+    --addBlockTypeVisible = false
     return
   end
 

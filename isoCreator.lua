@@ -70,6 +70,7 @@ function drawTerrains()
 end
 
 function creatorMousepressed(x, y, button)
+  clickAddTypeSubmit(x, y)
   clickBlockTypes(x, y)
   nameTextbox:mousepressed(x, y)
 	fileTextbox:mousepressed(x, y)
@@ -113,6 +114,13 @@ function creatorMousereleased(x, y, button)
 end
 
 function creatorKeypressed(key, unicode)
+  if key == "backspace" then
+    if selectedTextbox ~= nil then
+      selectedTextbox.content = string.sub(selectedTextbox.content, 1, string.len(selectedTextbox.content) - 1)
+      --selectedTextbox.content = selectedTextbox.content .. string.char(unicode)
+    end
+  end
+
   if unicode > 31 and unicode < 127 then
     if selectedTextbox ~= nil then
       selectedTextbox.content = selectedTextbox.content .. string.char(unicode)
@@ -170,6 +178,17 @@ function drawTextboxes()
   love.graphics.setColor(0, 0, 0)
   love.graphics.print("Add", textboxX + (195/2), textboxY + 106)
   love.graphics.setColor(r, g, b, a)
+end
+
+function clickAddTypeSubmit(x, y) 
+  if x >= textboxX + (165/2) and x <= textboxX + (165/2) + 60 then
+    if y >= textboxY + 100 and y <= textboxY + 125 then
+      newTerrain:addBlockType(nameTextbox.content, fileTextbox.content)
+      addBlockTypeVisible = false
+      nameTextbox.content = ""
+      fileTextbox.content = ""
+    end
+  end
 end
 
 function drawBlockTypes()
