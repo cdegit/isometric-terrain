@@ -34,7 +34,12 @@ creatingBlock = false
 
 blueprintVisible = true
 
+addBlockTypeVisible = false
+
 function creatorLoad()
+  textboxX = love.graphics.getWidth()/2 - 130
+  textboxY = love.graphics.getHeight()/2 - 75
+
 	nameTextbox = Textbox.create("Type Name: ", textboxX, textboxY)
 	fileTextbox = Textbox.create("File Name: ", textboxX, textboxY + 50)
 
@@ -43,13 +48,16 @@ function creatorLoad()
 end
 
 function creatorDraw()
-  drawTextboxes()
   drawTerrains()
   drawBlockTypes()
   drawRotateButtons()
 
   if creatingBlock then
     updateBlockHeight()
+  end
+
+  if addBlockTypeVisible then
+    drawTextboxes()
   end
 end
 
@@ -112,12 +120,8 @@ function creatorKeypressed(key, unicode)
   end
 end
 
-function drawAddBlockTypeButton()
-
-end
-
 function addBlockTypeClicked()
-
+  addBlockTypeVisible = true
 end
 
 function drawRotateButtons()
@@ -147,8 +151,25 @@ function clickRotateButtons(x, y)
 end
 
 function drawTextboxes()
+  --nameTextbox.x = love.graphics.getWidth()/2
+  --nameTextbox.y = love.graphics.getHeight()/2
+
+  -- draw modal background
+  local r, g, b, a = love.graphics.getColor()
+  love.graphics.setColor(70, 70, 70)
+  love.graphics.rectangle("fill", textboxX - 10, textboxY - 10, 250, 150)
+  love.graphics.setColor(r, g, b, a)
+
+  -- draw Textboxes
 	nameTextbox:draw()
 	fileTextbox:draw()
+
+  -- draw submit button
+  love.graphics.rectangle("fill", textboxX + (165/2), textboxY + 100, 60, 25)
+
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.print("Add", textboxX + (195/2), textboxY + 106)
+  love.graphics.setColor(r, g, b, a)
 end
 
 function drawBlockTypes()
@@ -194,7 +215,8 @@ function clickBlockTypes(x, y)
     if y >= blockTypesY and y <= blockTypesY + BLOCK_IMGHEIGHT/2 then
       -- TODO: open dialog to add a new block type
       -- for now, add the cube type
-      newTerrain:addBlockType("cube", "cube.png")
+      --newTerrain:addBlockType("cube", "cube.png")
+      addBlockTypeClicked()
     end
   end
 end
