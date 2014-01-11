@@ -28,33 +28,17 @@ end
 
 function love.keypressed(key, unicode)
   if key == "left" then
-    --t:rotate("left")
-    --blueprint:rotate("left")
-    --newTerrain:rotate("left")
-
     blueprint:translate(-100, 0)
     newTerrain:translate(-100, 0)
   elseif key == "right" then
-    --t:rotate("right")
-    --blueprint:rotate("right")
-    --newTerrain:rotate("right")
-
     blueprint:translate(100, 0)
     newTerrain:translate(100, 0)
   elseif key == "up" then
     blueprint:translate(0, -100)
     newTerrain:translate(0, -100)
   elseif key == "down" then
-    --blueprintVisible = not blueprintVisible
-
     blueprint:translate(0, 100)
     newTerrain:translate(0, 100)
-  elseif key == "return" then
-    -- try to add new block type with current name and fileName
-    -- will need to add more checking and stuff but
-    --newTerrain:addBlockType(nameTextbox.content, fileTextbox.content)
-    --addBlockTypeVisible = false
-    return
   end
 
   creatorKeypressed(key, unicode)

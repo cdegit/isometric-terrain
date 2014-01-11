@@ -34,7 +34,8 @@ function Textbox:mousepressed(x, y)
 	-- check if within bounds of text box
 	if x >= self.x + self.labelOffset and x <= self.x + self.width + self.labelOffset then
 		if y >= self.y and y <= self.y + self.height then
-			selectedTextbox = self
+			--selectedTextbox = self
+			return true
 		end
 	end
 end

@@ -1,20 +1,6 @@
-require "textbox"
-
--- TODO:
--- create button to add new tile type
--- once clicked, draw checkboxes and check if they are clicked
+require "dialog"
 
 -- TODO: make into proper class, more independant of main
--- TODO: display and allow selection of a tile type
-
-nameTextbox = {}
-
-fileTextbox = {}
-
-selectedTextbox = nil
-
-textboxX = 500
-textboxY = 20
 
 blockTypesX = 0
 blockTypesY = 0
@@ -36,12 +22,10 @@ blueprintVisible = true
 
 addBlockTypeVisible = false
 
-function creatorLoad()
-  textboxX = love.graphics.getWidth()/2 - 130
-  textboxY = love.graphics.getHeight()/2 - 75
+dialog = {}
 
-	nameTextbox = Textbox.create("Type Name: ", textboxX, textboxY)
-	fileTextbox = Textbox.create("File Name: ", textboxX, textboxY + 50)
+function creatorLoad()
+  dialog = Dialog.create(love.graphics.getWidth()/2 - 130, love.graphics.getHeight()/2 - 75)
 
 	blueprint = Terrain.create(makeGrid("blueprint", 7, 7), 300, 228)
   newTerrain = Terrain.create(makeGrid("empty", 7, 7), 300, 228)
@@ -56,8 +40,8 @@ function creatorDraw()
     updateBlockHeight()
   end
 
-  if addBlockTypeVisible then
-    drawTextboxes()
+  if dialog.visible then
+    dialog:draw()
   end
 end
 
@@ -70,10 +54,14 @@ function drawTerrains()
 end
 
 function creatorMousepressed(x, y, button)
-  clickAddTypeSubmit(x, y)
+  -- if the dialog is being displayed, disable mouse clicks on the background
+  -- this stops the user from accidentally creating or deleting blocks
+  if dialog.visible then
+    dialog:mousepressed(x, y)
+    return
+  end
+
   clickBlockTypes(x, y)
-  nameTextbox:mousepressed(x, y)
-	fileTextbox:mousepressed(x, y)
 	blueprint:selectTileFromMouse(x, y)
 
   if button == "l" then 
@@ -114,22 +102,7 @@ function creatorMousereleased(x, y, button)
 end
 
 function creatorKeypressed(key, unicode)
-  if key == "backspace" then
-    if selectedTextbox ~= nil then
-      selectedTextbox.content = string.sub(selectedTextbox.content, 1, string.len(selectedTextbox.content) - 1)
-      --selectedTextbox.content = selectedTextbox.content .. string.char(unicode)
-    end
-  end
-
-  if unicode > 31 and unicode < 127 then
-    if selectedTextbox ~= nil then
-      selectedTextbox.content = selectedTextbox.content .. string.char(unicode)
-    end
-  end
-end
-
-function addBlockTypeClicked()
-  addBlockTypeVisible = true
+  dialog:keypressed(key, unicode)
 end
 
 function drawRotateButtons()
@@ -155,54 +128,6 @@ function clickRotateButtons(x, y)
       blueprint:rotate("right")
       newTerrain:rotate("right")
     end   
-  end
-end
-
-function drawTextboxes()
-  --nameTextbox.x = love.graphics.getWidth()/2
-  --nameTextbox.y = love.graphics.getHeight()/2
-
-  -- draw modal background
-  local r, g, b, a = love.graphics.getColor()
-  love.graphics.setColor(70, 70, 70)
-  love.graphics.rectangle("fill", textboxX - 10, textboxY - 10, 250, 150)
-  love.graphics.setColor(r, g, b, a)
-
-  -- draw Textboxes
-	nameTextbox:draw()
-	fileTextbox:draw()
-
-  -- draw add and close buttons
-  love.graphics.rectangle("fill", textboxX + 140, textboxY + 100, 60, 25)
-  love.graphics.rectangle("fill", textboxX + 30, textboxY + 100, 60, 25)
-
-  love.graphics.setColor(0, 0, 0)
-  love.graphics.print("Add", textboxX + 158, textboxY + 106)
-  love.graphics.print("Close", textboxX + 43, textboxY + 106)
-  love.graphics.setColor(r, g, b, a)
-
-end
-
-function clickAddTypeSubmit(x, y) 
-  if y >= textboxY + 100 and y <= textboxY + 125 then
-    -- if add button clicked
-    if x >= textboxX + 140 and x <= textboxX + 200 then
-      if newTerrain:addBlockType(nameTextbox.content, fileTextbox.content) then
-        addBlockTypeVisible = false
-        nameTextbox.content = ""
-        fileTextbox.content = ""
-        alert = "File added successfully!"
-      else
-        -- report error to the user and prompt them to try again
-        alert = "Couldn't find a file with this name. Please try again."
-      end
-    end
-
-    if x >= textboxX + 30 and x <= textboxX + 90 then
-      addBlockTypeVisible = false
-      nameTextbox.content = ""
-      fileTextbox.content = ""
-    end
   end
 end
 
@@ -247,10 +172,8 @@ function clickBlockTypes(x, y)
  -- if click on the add new button
   if x >= blockTypesX + BLOCK_WIDTH*table.getn(BLOCKFILE)/2 and x <= blockTypesX + BLOCK_WIDTH*table.getn(BLOCKFILE) then
     if y >= blockTypesY and y <= blockTypesY + BLOCK_IMGHEIGHT/2 then
-      -- TODO: open dialog to add a new block type
-      -- for now, add the cube type
-      --newTerrain:addBlockType("cube", "cube.png")
-      addBlockTypeClicked()
+      -- open dialog to add a new block type
+      dialog.visible = true
     end
   end
 end
