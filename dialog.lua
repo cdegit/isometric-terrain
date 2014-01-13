@@ -11,7 +11,7 @@ function Dialog.create(x, y)
       dialog.nameTextbox = Textbox.create("Type Name: ", 0, 0)
       dialog.fileTextbox = Textbox.create("File Name: ", 0, 50)
       dialog.visible = false
-      dialog.selectedTextbox = nil
+      dialog.selectedTextbox = dialog.nameTextbox
 
       dialog.closeButtonX = 30
       dialog.addButtonX = 140
@@ -66,15 +66,7 @@ function Dialog:mousepressed(x, y)
    if y >= self.y + self.buttonY and y <= self.y + self.buttonY + self.buttonHeight then
     -- if add button clicked
     if x >= self.x + self.addButtonX and x <= self.x + self.addButtonX + self.buttonWidth then
-      if Terrain:addBlockType(self.nameTextbox.content, self.fileTextbox.content) then
-        self.visible = false
-        self.nameTextbox.content = ""
-        self.fileTextbox.content = ""
-        alert = "File added successfully!"
-      else
-        -- report error to the user and prompt them to try again
-        alert = "Couldn't find a file with this name. Please try again."
-      end
+      self:addBlockType()
     end
 
     if x >= self.x + self.closeButtonX and x <= self.x + self.closeButtonX + self.buttonWidth then
@@ -85,10 +77,34 @@ function Dialog:mousepressed(x, y)
   end
 end
 
+function Dialog:addBlockType()
+  if Terrain:addBlockType(self.nameTextbox.content, self.fileTextbox.content) then
+    self.visible = false
+    self.nameTextbox.content = ""
+    self.fileTextbox.content = ""
+    alert = "File added successfully!"
+  else
+    -- report error to the user and prompt them to try again
+    alert = "Couldn't find a file with this name. Please try again."
+  end
+end
+
 function Dialog:keypressed(key, unicode)
   if key == "backspace" then
     if self.selectedTextbox ~= nil then
       self.selectedTextbox.content = string.sub(self.selectedTextbox.content, 1, string.len(self.selectedTextbox.content) - 1)
+    end
+  end
+
+  if key == "tab" then
+    if self.selectedTextbox == self.nameTextbox then
+      self.selectedTextbox = self.fileTextbox
+    end
+  end
+
+  if key == "return" then
+    if self.nameTextbox.content ~= "" and self.fileTextbox.content ~= "" then
+      self:addBlockType()
     end
   end
 
