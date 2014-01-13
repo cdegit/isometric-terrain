@@ -3,12 +3,14 @@ require "block"
 require "isoCreator"
 
 t = {}
+ic = {}
 alert = ""
 
 function love.load()
 	love.graphics.setBackgroundColor(100, 100, 100)
 	local grid = {{}}
 	t = Terrain.create(grid, 300, 228)
+  ic = IsoCreator.create()
 
 	t:loadGrid("grid1.txt")
 	t:addBlock(5, 6, BLOCKTYPE["rock"], 2)
@@ -17,39 +19,39 @@ function love.load()
 
   --t:addBlockType("cube", "cube.png")
 
-  creatorLoad()
+  ic:creatorLoad()
 end
 
 function love.draw()
 	--t:draw()
-  creatorDraw()
+  ic:creatorDraw()
   love.graphics.print(alert, 0, 100)
 end
 
 function love.keypressed(key, unicode)
   if key == "left" then
-    blueprint:translate(-100, 0)
-    newTerrain:translate(-100, 0)
+    ic.blueprint:translate(-100, 0)
+    ic.newTerrain:translate(-100, 0)
   elseif key == "right" then
-    blueprint:translate(100, 0)
-    newTerrain:translate(100, 0)
+    ic.blueprint:translate(100, 0)
+    ic.newTerrain:translate(100, 0)
   elseif key == "up" then
-    blueprint:translate(0, -100)
-    newTerrain:translate(0, -100)
+    ic.blueprint:translate(0, -100)
+    ic.newTerrain:translate(0, -100)
   elseif key == "down" then
-    blueprint:translate(0, 100)
-    newTerrain:translate(0, 100)
+    ic.blueprint:translate(0, 100)
+    ic.newTerrain:translate(0, 100)
   end
 
-  creatorKeypressed(key, unicode)
+  ic:creatorKeypressed(key, unicode)
 end
 
 function love.mousepressed(x, y, button)
-    creatorMousepressed(x, y, button)
+    ic:creatorMousepressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)
-  creatorMousereleased(x, y, button)
+  ic:creatorMousereleased(x, y, button)
 end 
 
 function love.quit()

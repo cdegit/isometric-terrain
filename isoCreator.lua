@@ -1,91 +1,100 @@
 require "dialog"
 
--- TODO: make into proper class, more independant of main
+IsoCreator = {}
+IsoCreator.__index = IsoCreator
 
-blockTypesX = 0
-blockTypesY = 0
+function IsoCreator.create()
+  local iso = {}             -- our new object
+  setmetatable(iso,IsoCreator) 
 
-rotateButtonsX = 650
-rotateButtonsY = 130
+  iso.blockTypesX = 0
+  iso.blockTypesY = 0
 
-rotL = love.graphics.newImage("rotateLeft.png")
-rotR = love.graphics.newImage("rotateRight.png")
+  iso.rotateButtonsX = 650
+  iso.rotateButtonsY = 130
 
-currentType = BLOCKTYPE["grass"] -- default type when creating blocks
+  iso.rotL = love.graphics.newImage("rotateLeft.png")
+  iso.rotR = love.graphics.newImage("rotateRight.png")
 
-blueprint = {}
-newTerrain = {}
+  iso.currentType = BLOCKTYPE["grass"] -- default type when creating blocks
 
-creatingBlock = false
+  iso.blueprint = {}
+  iso.newTerrain = {}
 
-blueprintVisible = true
+  iso.creatingBlock = false
 
-addBlockTypeVisible = false
+  iso.blueprintVisible = true
 
-dialog = {}
+  iso.addBlockTypeVisible = false
 
-function creatorLoad()
-  dialog = Dialog.create(love.graphics.getWidth()/2 - 130, love.graphics.getHeight()/2 - 75)
+  iso.dialog = {}
 
-	blueprint = Terrain.create(makeGrid("blueprint", 7, 7), 300, 228)
-  newTerrain = Terrain.create(makeGrid("empty", 7, 7), 300, 228)
+  return iso
 end
 
-function creatorDraw()
-  drawTerrains()
-  drawBlockTypes()
-  drawRotateButtons()
 
-  if creatingBlock then
-    updateBlockHeight()
+function IsoCreator:creatorLoad()
+  self.dialog = Dialog.create(love.graphics.getWidth()/2 - 130, love.graphics.getHeight()/2 - 75)
+
+	self.blueprint = Terrain.create(self:makeGrid("blueprint", 7, 7), 300, 228)
+  self.newTerrain = Terrain.create(self:makeGrid("empty", 7, 7), 300, 228)
+end
+
+function IsoCreator:creatorDraw()
+  self:drawTerrains()
+  self:drawBlockTypes()
+  self:drawRotateButtons()
+
+  if self.creatingBlock then
+    self:updateBlockHeight()
   end
 
-  if dialog.visible then
-    dialog:draw()
+  if self.dialog.visible then
+    self.dialog:draw()
   end
 end
 
 -- draws 2 terrains: the blueprint terrain and the actual terrain being built
-function drawTerrains()
-  newTerrain:draw()
-  if blueprintVisible then
-    blueprint:draw()
+function IsoCreator:drawTerrains()
+  self.newTerrain:draw()
+  if self.blueprintVisible then
+    self.blueprint:draw()
   end
 end
 
-function creatorMousepressed(x, y, button)
+function IsoCreator:creatorMousepressed(x, y, button)
   -- if the dialog is being displayed, disable mouse clicks on the background
   -- this stops the user from accidentally creating or deleting blocks
-  if dialog.visible then
-    dialog:mousepressed(x, y)
+  if self.dialog.visible then
+    self.dialog:mousepressed(x, y)
     return
   end
 
-  clickBlockTypes(x, y)
-	blueprint:selectTileFromMouse(x, y)
+  self:clickBlockTypes(x, y)
+	self.blueprint:selectTileFromMouse(x, y)
 
   if button == "l" then 
-      creatingBlock = true
-      newTerrain:addBlock(blueprint.selected[1], blueprint.selected[2], currentType, 0)
+    self.creatingBlock = true
+    self.newTerrain:addBlock(self.blueprint.selected[1], self.blueprint.selected[2], self.currentType, 0)
   else
-      creatingBlock = false
-      newTerrain:removeBlock(blueprint.selected[1], blueprint.selected[2])
+    self.creatingBlock = false
+    self.newTerrain:removeBlock(self.blueprint.selected[1], self.blueprint.selected[2])
   end
 
-  clickRotateButtons(x, y)
+  self:clickRotateButtons(x, y)
 end
 
-function updateBlockHeight()
+function IsoCreator:updateBlockHeight()
   -- get original height from blueprint.selected
   -- for every amount greater than the height by BLOCK_HEIGHT
   -- increment height of block
   -- on release, stop changing it
   local y = love.mouse.getY()
-  local bx = blueprint.selected[1]
-  local by = blueprint.selected[2]
+  local bx = self.blueprint.selected[1]
+  local by = self.blueprint.selected[2]
 
 -- need to take into account offset
-  local blockY = blueprint.y + (bx+by) * (BLOCK_IMGHEIGHT / 4) - ((BLOCK_IMGHEIGHT / 2) * (table.getn(blueprint.grid) / 2)) - (BLOCK_IMGHEIGHT / 2)*0
+  local blockY = self.blueprint.y + (bx+by) * (BLOCK_IMGHEIGHT / 4) - ((BLOCK_IMGHEIGHT / 2) * (table.getn(self.blueprint.grid) / 2)) - (BLOCK_IMGHEIGHT / 2)*0
 
   local height = math.floor((blockY - y) / BLOCK_HEIGHT)
 
@@ -94,53 +103,53 @@ function updateBlockHeight()
     height = 0
   end
 
-  newTerrain:addBlock(blueprint.selected[1], blueprint.selected[2], currentType, height)
+  self.newTerrain:addBlock(self.blueprint.selected[1], self.blueprint.selected[2], self.currentType, height)
 end
 
-function creatorMousereleased(x, y, button)
-  creatingBlock = false
+function IsoCreator:creatorMousereleased(x, y, button)
+  self.creatingBlock = false
 end
 
-function creatorKeypressed(key, unicode)
-  dialog:keypressed(key, unicode)
+function IsoCreator:creatorKeypressed(key, unicode)
+  self.dialog:keypressed(key, unicode)
 end
 
-function drawRotateButtons()
+function IsoCreator:drawRotateButtons()
   love.graphics.push()
-  love.graphics.translate(rotateButtonsX, rotateButtonsY)
-  love.graphics.draw(rotL, 0, 0)
-  love.graphics.draw(rotR, rotL:getWidth(), 0)
+  love.graphics.translate(self.rotateButtonsX, self.rotateButtonsY)
+  love.graphics.draw(self.rotL, 0, 0)
+  love.graphics.draw(self.rotR, self.rotL:getWidth(), 0)
   love.graphics.pop()
 end
 
-function clickRotateButtons(x, y)
+function IsoCreator:clickRotateButtons(x, y)
   -- y is shared, so check that first
-  if y >= rotateButtonsY and y <= rotateButtonsY + rotL:getHeight() then
+  if y >= self.rotateButtonsY and y <= self.rotateButtonsY + self.rotL:getHeight() then
 
     -- if clicking rotL
-    if x >= rotateButtonsX and x <= rotateButtonsX + rotL:getWidth() then
-      blueprint:rotate("left")
-      newTerrain:rotate("left")
+    if x >= self.rotateButtonsX and x <= self.rotateButtonsX + self.rotL:getWidth() then
+      self.blueprint:rotate("left")
+      self.newTerrain:rotate("left")
     end
 
     -- if clicking rotR
-     if x >= rotateButtonsX + rotL:getWidth() and x <= rotateButtonsX + (rotL:getWidth() * 2) then
-      blueprint:rotate("right")
-      newTerrain:rotate("right")
+     if x >= self.rotateButtonsX + self.rotL:getWidth() and x <= self.rotateButtonsX + (self.rotL:getWidth() * 2) then
+      self.blueprint:rotate("right")
+      self.newTerrain:rotate("right")
     end   
   end
 end
 
-function drawBlockTypes()
+function IsoCreator:drawBlockTypes()
   love.graphics.push()
-  love.graphics.translate(blockTypesX, blockTypesY)
+  love.graphics.translate(self.blockTypesX, self.blockTypesY)
   love.graphics.scale(0.5, 0.5)
 
   for k, v in pairs(BLOCKFILE) do
     local block = love.graphics.newImage(v)
     love.graphics.draw(block, BLOCK_WIDTH*(k-1), 0)
 
-    if k == currentType then
+    if k == self.currentType then
       local width = love.graphics.getLineWidth()
       local r, g, b, a = love.graphics.getColor()
 
@@ -160,29 +169,29 @@ function drawBlockTypes()
   love.graphics.pop()
 end
 
-function clickBlockTypes(x, y)
+function IsoCreator:clickBlockTypes(x, y)
  for k,v in pairs(BLOCKFILE) do
-  if x >= blockTypesX + BLOCK_WIDTH*(k-1)/2 and x <= blockTypesX + BLOCK_WIDTH*k/2 then
-    if y >= blockTypesY and y <= blockTypesY + BLOCK_IMGHEIGHT/2 then
-      currentType = k
+  if x >= self.blockTypesX + BLOCK_WIDTH*(k-1)/2 and x <= self.blockTypesX + BLOCK_WIDTH*k/2 then
+    if y >= self.blockTypesY and y <= self.blockTypesY + BLOCK_IMGHEIGHT/2 then
+      self.currentType = k
     end
   end
  end
 
  -- if click on the add new button
-  if x >= blockTypesX + BLOCK_WIDTH*table.getn(BLOCKFILE)/2 and x <= blockTypesX + BLOCK_WIDTH*table.getn(BLOCKFILE) then
-    if y >= blockTypesY and y <= blockTypesY + BLOCK_IMGHEIGHT/2 then
+  if x >= self.blockTypesX + BLOCK_WIDTH*table.getn(BLOCKFILE)/2 and x <= self.blockTypesX + BLOCK_WIDTH*table.getn(BLOCKFILE) then
+    if y >= self.blockTypesY and y <= self.blockTypesY + BLOCK_IMGHEIGHT/2 then
       -- open dialog to add a new block type
-      dialog.visible = true
+      self.dialog.visible = true
     end
   end
 end
 
 -- simple function to generate a uniform grid
-function makeGrid(type, width, height)
+function IsoCreator:makeGrid(type, width, height)
   local grid = {}
-  yempty = 0
-  xempty = 0
+  local yempty = 0
+  local xempty = 0
 
   if width > height then
     yempty = width - height
