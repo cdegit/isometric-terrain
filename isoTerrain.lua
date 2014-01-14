@@ -90,7 +90,7 @@ function Terrain:drawAvatars()
 	for i = 1, table.getn(self.avatarModel) do
 		local avatar = self.avatarModel[i]
 		avatar:draw((avatar.y - avatar.x) * (BLOCK_WIDTH / 2), 
-			((avatar.x+avatar.y) * (BLOCK_IMGHEIGHT / 4)) - ((BLOCK_IMGHEIGHT / 2) * (table.getn(self.grid) / 2)) - (BLOCK_IMGHEIGHT / 2)*self.grid[avatar.x][avatar.y].height)
+			((avatar.x+avatar.y) * (BLOCK_IMGHEIGHT / 4)) - ((BLOCK_IMGHEIGHT / 2) * (table.getn(self.grid) / 2)) - (BLOCK_IMGHEIGHT / 2)* (self.grid[avatar.x][avatar.y].height + avatar.height))
 	end
 end
 

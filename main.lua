@@ -23,7 +23,8 @@ function love.load()
   ic:creatorLoad()
 
   a = {}
-  a = Avatar.create("test", 3, 5)
+  a = Avatar.create("sprite.png", 3, 5, 2)
+  ic.newTerrain:addBlock(3, 5, BLOCKTYPE["grass"], 3)
   ic.newTerrain:addAvatar(a)
 end
 
