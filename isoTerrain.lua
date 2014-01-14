@@ -1,4 +1,5 @@
 require "block"
+require "avatar"
 
 BLOCKTYPE = {["empty"] = 0, ["grass"] = 1, ["rock"] = 2, ["blueprint"] = 3} -- allows you to easily create the new block based on name
 BLOCKFILE = {[1] = "grass.png", [2] = "dirt.png", [3] = "blueprint.png"}		 -- stores the file names for the blocks to be drawn
@@ -17,6 +18,8 @@ function Terrain.create(grid, x, y)
    	terr.grid = {}
    	terr.grid = grid
    	terr.selected = {0, 0}
+
+   	terr.avatarModel = {}
 
    	return terr
 end
@@ -74,14 +77,21 @@ function Terrain:draw()
 	  				love.graphics.push()
 	  				love.graphics.translate((y-x) * (tile:getWidth() / 2), ((x+y) * (tile:getHeight() / 4)) - ((tile:getHeight() / 2) * (table.getn(grid) / 2)) - (tile:getHeight() / 2)*grid[x][y].height)
 	  				love.graphics.quad("line", 0, (BLOCK_HEIGHT / 2), BLOCK_HEIGHT, 0, BLOCK_WIDTH, (BLOCK_HEIGHT / 2), BLOCK_HEIGHT, BLOCK_HEIGHT)
-	  				love.graphics.pop()
-
-				
+	  				love.graphics.pop()				
 	  			end
 	  		end
 	   end
 	end
+	self:drawAvatars()
 	love.graphics.pop()
+end
+
+function Terrain:drawAvatars()
+	for i = 1, table.getn(self.avatarModel) do
+		local avatar = self.avatarModel[i]
+		avatar:draw((avatar.y - avatar.x) * (BLOCK_WIDTH / 2), 
+			((avatar.x+avatar.y) * (BLOCK_IMGHEIGHT / 4)) - ((BLOCK_IMGHEIGHT / 2) * (table.getn(self.grid) / 2)) - (BLOCK_IMGHEIGHT / 2)*self.grid[avatar.x][avatar.y].height)
+	end
 end
 
 function Terrain:loadGrid(fileName)
@@ -294,16 +304,20 @@ end
 
 -- TODO: fix bug introduced by changing center of grid (adding new blocks)
 function Terrain:selectTileFromMouse(x, y)
-		-- from http://laserbrainstudios.com/2010/08/the-basics-of-isometric-programming/
-		-- TODO: strongly consider switching height to 1 indexed to match everything else
-		x = x - (self.x + BLOCK_WIDTH) 
-		y = y - (self.y - BLOCK_WIDTH) + (BLOCK_HEIGHT / 2) 
+	-- from http://laserbrainstudios.com/2010/08/the-basics-of-isometric-programming/
+	-- TODO: strongly consider switching height to 1 indexed to match everything else
+	x = x - (self.x + BLOCK_WIDTH) 
+	y = y - (self.y - BLOCK_WIDTH) + (BLOCK_HEIGHT / 2) 
 
-		TileX = math.floor((y / BLOCK_HEIGHT) + (x / BLOCK_WIDTH))
-  		TileY = math.floor((y / BLOCK_HEIGHT) - (x / BLOCK_WIDTH))
+	TileX = math.floor((y / BLOCK_HEIGHT) + (x / BLOCK_WIDTH))
+		TileY = math.floor((y / BLOCK_HEIGHT) - (x / BLOCK_WIDTH))
 
-  		self.selected = {TileY, TileX + 1}
-  		self:clickCheckHeight()
+		self.selected = {TileY, TileX + 1}
+		self:clickCheckHeight()
+end
+
+function Terrain:addAvatar(avatar)
+	table.insert(self.avatarModel, avatar)
 end
 
 -- Utility Functions

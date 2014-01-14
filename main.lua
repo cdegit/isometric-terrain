@@ -1,5 +1,6 @@
 require "isoTerrain"
 require "block"
+require "avatar"
 require "isoCreator"
 
 t = {}
@@ -20,6 +21,10 @@ function love.load()
   --t:addBlockType("cube", "cube.png")
 
   ic:creatorLoad()
+
+  a = {}
+  a = Avatar.create("test", 3, 5)
+  ic.newTerrain:addAvatar(a)
 end
 
 function love.draw()
