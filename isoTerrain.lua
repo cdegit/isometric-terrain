@@ -320,6 +320,14 @@ function Terrain:addAvatar(avatar)
 	table.insert(self.avatarModel, avatar)
 end
 
+function Terrain:moveAvatar(avatar, x, y)
+	for i = 1, table.getn(self.avatarModel) do
+		if self.avatarModel[i] == avatar then
+			self.avatarModel[i]:move(x, y)
+		end
+	end
+end
+
 -- Utility Functions
 
 -- from http://www.programmer-tutorials.com/lua-tutorial-clamp-number-inbetween-ranges/

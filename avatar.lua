@@ -28,3 +28,9 @@ function Avatar:draw(x, y)
 	--love.graphics.rectangle("fill", 0, 0, 30, 30)
 	love.graphics.pop()
 end
+
+-- dx and dy are the displacement on the grid
+function Avatar:move(dx, dy)
+   self.x = self.x + dx
+   self.y = self.y + dy
+end
