@@ -24,7 +24,6 @@ function love.load()
 
   a = {}
   a = Avatar.create("sprite.png", 3, 5, 2)
-  ic.newTerrain:addBlock(3, 5, BLOCKTYPE["grass"], 3)
   ic.newTerrain:addAvatar(a)
 
   ic.newTerrain:moveAvatar(a, 1, 2)
