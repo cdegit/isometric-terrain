@@ -37,7 +37,7 @@ function IsoCreator:creatorLoad()
   self.dialog = Dialog.create(love.graphics.getWidth()/2 - 130, love.graphics.getHeight()/2 - 75)
 
 	self.blueprint = Terrain.create(self:makeGrid("blueprint", 7, 7), 300, 228)
-  self.newTerrain = Terrain.create(self:makeGrid("empty", 7, 7), 300, 228)
+  self.newTerrain = Terrain.create(self:makeRandomGrid(7, 7), 300, 228)
 end
 
 function IsoCreator:creatorDraw()
@@ -206,6 +206,36 @@ function IsoCreator:makeGrid(type, width, height)
         grid[x][y] = Block.create(BLOCKTYPE["empty"], 0)
       else
         grid[x][y] = Block.create(BLOCKTYPE[type], 0)
+      end
+    end
+  end
+
+  return grid
+end
+
+-- TODO: make a slightly more intelligent random terrain generator
+function IsoCreator:makeRandomGrid(width, height)
+  local grid = {}
+  local yempty = 0
+  local xempty = 0
+
+  if width > height then
+    yempty = width - height
+  elseif height > width then
+    xempty = height - width
+  end
+
+  for x = 1, width + xempty do
+    grid[x] = {}
+    for y = 1, height + yempty do
+      if y > height or x > width then
+        grid[x][y] = Block.create(BLOCKTYPE["empty"], 0)
+      else
+        --grid[x][y] = Block.create(BLOCKTYPE[type], 0)
+        -- select a random block type and height 
+        local randomType = math.random(table.getn(BLOCKFILE))
+        local randomHeight = math.random(5) -- arbitrary max height
+        grid[x][y] = Block.create(randomType, randomHeight)
       end
     end
   end
