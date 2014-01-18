@@ -27,6 +27,12 @@ function love.load()
   ic.newTerrain:addAvatar(a)
 
   ic.newTerrain:moveAvatar(a, 1, 2)
+
+  b = {}
+  b = Avatar.create("sprite.png", 3, 5, 2)
+  ic.newTerrain:addAvatar(b)
+
+  ic.newTerrain:saveAvatars("avatars.txt")
 end
 
 function love.draw()

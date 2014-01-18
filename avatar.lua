@@ -13,6 +13,7 @@ function Avatar.create(imageName, x, y, height)
 
    	av.height = height
 
+      av.imgName = imageName
    	-- TODO: create a generic sprite for this
    	av.sprite = love.graphics.newImage(imageName)
    	-- will also want different sprites depending on their orientation, and when the Terrain is rotated

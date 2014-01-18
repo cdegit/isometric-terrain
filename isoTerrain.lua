@@ -158,6 +158,29 @@ function Terrain:saveGrid(fileName)
 	file:close()
 end
 
+-- In future, have both Grid and Avatars written to same file maybe? Two lines in between to separate?
+function Terrain:saveAvatars(filename)
+	file = love.filesystem.newFile(filename)
+	file:open("w")
+
+	for i = 1, table.getn(self.avatarModel) do
+		-- write filename, x and y, height. Add other attributes later.
+		local avatar = self.avatarModel[i]
+		file:write(avatar.imgName)
+		file:write(" ")
+		file:write(avatar.x)
+		file:write(" ")
+		file:write(avatar.y)
+		file:write(" ")
+		file:write(avatar.height)
+
+		-- one record per line
+		file:write("\n")
+	end
+
+	file:close()
+end
+
 function Terrain:addBlock(x, y, blockType, height)
 	-- check if x and y are already within the bounds of the grid
 	if x >= 1 and x <= table.getn(self.grid) and y >= 1 and y <= table.getn(self.grid[1]) then
