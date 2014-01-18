@@ -24,15 +24,15 @@ function love.load()
 
   a = {}
   a = Avatar.create("sprite.png", 3, 5, 2)
-  ic.newTerrain:addAvatar(a)
+  --ic.newTerrain:addAvatar(a)
 
-  ic.newTerrain:moveAvatar(a, 1, 2)
+  --ic.newTerrain:moveAvatar(a, 1, 2)
 
   b = {}
   b = Avatar.create("sprite.png", 3, 5, 2)
-  ic.newTerrain:addAvatar(b)
+ -- ic.newTerrain:addAvatar(b)
 
-  ic.newTerrain:saveAvatars("avatars.txt")
+  ic.newTerrain:loadAvatars("avatars.txt")
 end
 
 function love.draw()

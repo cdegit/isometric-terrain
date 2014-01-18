@@ -158,7 +158,7 @@ function Terrain:saveGrid(fileName)
 	file:close()
 end
 
--- In future, have both Grid and Avatars written to same file maybe? Two lines in between to separate?
+-- TODO: In future, have both Grid and Avatars written to same file maybe? Two lines in between to separate?
 function Terrain:saveAvatars(filename)
 	file = love.filesystem.newFile(filename)
 	file:open("w")
@@ -176,6 +176,34 @@ function Terrain:saveAvatars(filename)
 
 		-- one record per line
 		file:write("\n")
+	end
+
+	file:close()
+end
+
+function Terrain:loadAvatars(filename)
+	file = love.filesystem.newFile(filename)
+	file:open("r")
+
+	local avatars = {}
+
+	j = 1
+	for line in file:lines() do
+		avatars[j] = line
+		j = j + 1
+	end
+
+	-- unlike grid, each line is own avatar
+	for key, value in pairs(avatars) do
+		avTable = string.split(value, " ")
+		av = {}
+
+		-- create new avatar
+		-- data intentionally written to file in same order as args
+		av = Avatar.create(avTable[1], tonumber(avTable[2]), tonumber(avTable[3]), tonumber(avTable[4]))
+		
+		-- add avatar to the model
+		table.insert(self.avatarModel, av)
 	end
 
 	file:close()
