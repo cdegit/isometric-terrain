@@ -330,6 +330,40 @@ function Terrain:rotate(angle)
 	end
 
 	self.grid = newGrid -- set the rotated grid to be the grid
+
+	self:rotateAvatars(angle)
+end
+
+function Terrain:rotateAvatars(angle)
+	for i = 1, table.getn(self.avatarModel) do
+		local avatar = self.avatarModel[i]
+		local mat = {avatar.x, avatar.y, 1}
+
+		c = math.round(math.cos(math.pi/2))
+		s = math.round(math.sin(math.pi/2))
+
+		rotMat = {}
+		if (angle == "left") then
+			rotMat = {{c, s, 0}, {-s, c, 0}, {0, 0, 1}}
+			transMat = {{1, 0, 0}, {0, 1, table.getn(self.grid) + 1}, {0, 0, 1}}
+		elseif angle == "right" then
+			rotMat = {{c, -s, 0}, {s, c, 0}, {0, 0, 1}}
+			transMat = {{1, 0, table.getn(self.grid[1]) + 1}, {0, 1, 0}, {0, 0, 1}}
+		end
+
+		res = self:multiplyMatrices(rotMat, mat) -- multiply the index matrix and the rotation matrix
+
+		-- this will leave you outside of the bounds of the array
+		-- use a translation matrix to return to the correct position
+
+		res = self:multiplyMatrices(transMat, res)
+
+		tx = res[1] -- new x index
+		ty = res[2] -- new y index
+
+		avatar.x = tx
+		avatar.y = ty
+	end
 end
 
 function Terrain:translate(xDist, yDist)
