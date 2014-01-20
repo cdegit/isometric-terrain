@@ -37,7 +37,7 @@ end
 
 function love.draw()
 	--t:draw()
-  ic:creatorDraw()
+  ic:draw()
   love.graphics.print(alert, 0, 100)
 end
 
@@ -56,15 +56,15 @@ function love.keypressed(key, unicode)
     ic.newTerrain:translate(0, 100)
   end
 
-  ic:creatorKeypressed(key, unicode)
+  ic:keypressed(key, unicode)
 end
 
 function love.mousepressed(x, y, button)
-    ic:creatorMousepressed(x, y, button)
+    ic:mousepressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)
-  ic:creatorMousereleased(x, y, button)
+  ic:mousereleased(x, y, button)
 end 
 
 function love.quit()

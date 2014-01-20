@@ -29,6 +29,8 @@ function IsoCreator.create()
 
   iso.dialog = {}
 
+  iso.promptVisible = true
+
   return iso
 end
 
@@ -40,7 +42,12 @@ function IsoCreator:creatorLoad()
   self.newTerrain = Terrain.create(self:makeSmartRandomGrid(7, 7), 300, 228)
 end
 
-function IsoCreator:creatorDraw()
+-- Prompt the user to either load an existing file to edit, or create a new one
+function IsoCreator:loadPrompt()
+  -- draw a simple dialog box with two buttons, no text boxes
+end
+
+function IsoCreator:draw()
   self:drawTerrains()
   self:drawBlockTypes()
   self:drawRotateButtons()
@@ -52,6 +59,10 @@ function IsoCreator:creatorDraw()
   if self.dialog.visible then
     self.dialog:draw()
   end
+
+  if self.promptVisible then
+    self:loadPrompt()
+  end
 end
 
 -- draws 2 terrains: the blueprint terrain and the actual terrain being built
@@ -62,7 +73,7 @@ function IsoCreator:drawTerrains()
   end
 end
 
-function IsoCreator:creatorMousepressed(x, y, button)
+function IsoCreator:mousepressed(x, y, button)
   -- if the dialog is being displayed, disable mouse clicks on the background
   -- this stops the user from accidentally creating or deleting blocks
   if self.dialog.visible then
@@ -106,11 +117,11 @@ function IsoCreator:updateBlockHeight()
   self.newTerrain:addBlock(self.blueprint.selected[1], self.blueprint.selected[2], self.currentType, height)
 end
 
-function IsoCreator:creatorMousereleased(x, y, button)
+function IsoCreator:mousereleased(x, y, button)
   self.creatingBlock = false
 end
 
-function IsoCreator:creatorKeypressed(key, unicode)
+function IsoCreator:keypressed(key, unicode)
   self.dialog:keypressed(key, unicode)
 end
 
