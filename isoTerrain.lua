@@ -20,7 +20,7 @@ function Terrain.create(grid, x, y)
    	terr.selected = {0, 0}
 
    	terr.avatarModel = {}
-   	terr.currentAvatar = {0, 0}
+   	terr.currentAvatar = 0
 
    	return terr
 end
@@ -30,6 +30,10 @@ function Terrain:draw()
 
 	-- set up default tile type
 	tile = love.graphics.newImage("grass.png")
+
+	if table.getn(self.avatarModel) > 0 then
+		self.currentAvatar = 1
+	end
 
 	love.graphics.push()
 	love.graphics.translate(self.x, self.y)
@@ -72,6 +76,17 @@ function Terrain:draw()
 	            	((y-x) * (tile:getWidth() / 2)),
 	            	((x+y) * (tile:getHeight() / 4)) - ((tile:getHeight() / 2) * (table.getn(grid) / 2)) - (tile:getHeight() / 2)*grid[x][y].height)
 	   
+	  			-- draw any avatars on top of the block
+	  			if self.currentAvatar > 0 then
+		  			if self.avatarModel[self.currentAvatar].x == x and self.avatarModel[self.currentAvatar].y == y then
+		  				local avatar = self.avatarModel[self.currentAvatar]
+						avatar:draw((avatar.y - avatar.x) * (BLOCK_WIDTH / 2), 
+							((avatar.x+avatar.y) * (BLOCK_IMGHEIGHT / 4)) - ((BLOCK_IMGHEIGHT / 2) * (table.getn(self.grid) / 2)) - (BLOCK_IMGHEIGHT / 2)* (self.grid[avatar.x][avatar.y].height + avatar.height))
+		  				if self.currentAvatar < table.getn(self.avatarModel) then
+		  					self.currentAvatar = self.currentAvatar + 1
+		  				end
+		  			end
+	  			end
 	  			-- if this block is selected, draw a white quad to indicate selection
 	  			-- TODO: animate, slowly flash
 	  			if x == self.selected[1] and y == self.selected[2] then
@@ -83,20 +98,7 @@ function Terrain:draw()
 	  		end
 	   end
 	end
-	self:drawAvatars()
 	love.graphics.pop()
-end
-
--- want to draw just after we draw their block
--- to avoid looping through everything, maintain avatars in sorted order, first by x and then by y
-
-
-function Terrain:drawAvatars()
-	for i = 1, table.getn(self.avatarModel) do
-		local avatar = self.avatarModel[i]
-		avatar:draw((avatar.y - avatar.x) * (BLOCK_WIDTH / 2), 
-			((avatar.x+avatar.y) * (BLOCK_IMGHEIGHT / 4)) - ((BLOCK_IMGHEIGHT / 2) * (table.getn(self.grid) / 2)) - (BLOCK_IMGHEIGHT / 2)* (self.grid[avatar.x][avatar.y].height + avatar.height))
-	end
 end
 
 function Terrain:loadGrid(fileName)

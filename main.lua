@@ -39,11 +39,6 @@ function love.draw()
 	--t:draw()
   ic:draw()
   love.graphics.print(alert, 0, 100)
-
-  for i = 1, table.getn(ic.newTerrain.avatarModel) do
-    love.graphics.print(ic.newTerrain.avatarModel[i].x, 20 * i, 200)
-    love.graphics.print(ic.newTerrain.avatarModel[i].y, 20 * i, 220)
-  end
 end
 
 function love.keypressed(key, unicode)
@@ -65,7 +60,7 @@ function love.keypressed(key, unicode)
 end
 
 function love.mousepressed(x, y, button)
-    ic:mousepressed(x, y, button)
+  ic:mousepressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)

@@ -39,6 +39,7 @@ function IsoCreator:creatorLoad()
   self.dialog = Dialog.create(love.graphics.getWidth()/2 - 130, love.graphics.getHeight()/2 - 75)
 
 	self.blueprint = Terrain.create(self:makeGrid("blueprint", 7, 7), 300, 228)
+  self.blueprintVisible = false
   self.newTerrain = Terrain.create(self:makeSmartRandomGrid(7, 7), 300, 228)
 end
 
