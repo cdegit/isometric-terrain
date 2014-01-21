@@ -23,8 +23,8 @@ function love.load()
   ic:creatorLoad()
 
   a = {}
-  a = Avatar.create("sprite.png", 3, 5, 2)
-  --ic.newTerrain:addAvatar(a)
+  a = Avatar.create("sprite.png", 1, 1, 2)
+  ic.newTerrain:addAvatar(a)
 
   --ic.newTerrain:moveAvatar(a, 1, 2)
 
@@ -39,6 +39,11 @@ function love.draw()
 	--t:draw()
   ic:draw()
   love.graphics.print(alert, 0, 100)
+
+  for i = 1, table.getn(ic.newTerrain.avatarModel) do
+    love.graphics.print(ic.newTerrain.avatarModel[i].x, 20 * i, 200)
+    love.graphics.print(ic.newTerrain.avatarModel[i].y, 20 * i, 220)
+  end
 end
 
 function love.keypressed(key, unicode)

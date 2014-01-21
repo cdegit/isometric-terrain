@@ -20,6 +20,7 @@ function Terrain.create(grid, x, y)
    	terr.selected = {0, 0}
 
    	terr.avatarModel = {}
+   	terr.currentAvatar = {0, 0}
 
    	return terr
 end
@@ -85,6 +86,10 @@ function Terrain:draw()
 	self:drawAvatars()
 	love.graphics.pop()
 end
+
+-- want to draw just after we draw their block
+-- to avoid looping through everything, maintain avatars in sorted order, first by x and then by y
+
 
 function Terrain:drawAvatars()
 	for i = 1, table.getn(self.avatarModel) do
@@ -203,7 +208,8 @@ function Terrain:loadAvatars(filename)
 		av = Avatar.create(avTable[1], tonumber(avTable[2]), tonumber(avTable[3]), tonumber(avTable[4]))
 		
 		-- add avatar to the model
-		table.insert(self.avatarModel, av)
+		self:addAvatar(av)
+		--table.insert(self.avatarModel, av)
 	end
 
 	file:close()
@@ -335,8 +341,13 @@ function Terrain:rotate(angle)
 end
 
 function Terrain:rotateAvatars(angle)
-	for i = 1, table.getn(self.avatarModel) do
-		local avatar = self.avatarModel[i]
+	-- easiest way to maintain sort is just to readd everything
+	-- so, get a copy of what is in arrayModel, then empty arrayModel and readd everything with the new coordinates
+	local oldModel = self.avatarModel
+	self.avatarModel = {}
+
+	for i = 1, table.getn(oldModel) do
+		local avatar = oldModel[i]
 		local mat = {avatar.x, avatar.y, 1}
 
 		c = math.round(math.cos(math.pi/2))
@@ -361,8 +372,8 @@ function Terrain:rotateAvatars(angle)
 		tx = res[1] -- new x index
 		ty = res[2] -- new y index
 
-		avatar.x = tx
-		avatar.y = ty
+		local newAvatar = Avatar.create(avatar.imgName, tx, ty, avatar.height)
+		self:addAvatar(newAvatar)
 	end
 end
 
@@ -402,6 +413,34 @@ function Terrain:selectTileFromMouse(x, y)
 end
 
 function Terrain:addAvatar(avatar)
+	-- if this is the first avatar, just add it
+	if table.getn(self.avatarModel) > 0 then
+		self:insertAvatarSorted(avatar)
+	else -- otherwise, add at correct position to maintain sorted array
+		table.insert(self.avatarModel, avatar)
+	end
+end
+
+function Terrain:insertAvatarSorted(avatar)
+	-- rememeber, we can assume that the current array is already sorted
+	for i = 1, table.getn(self.avatarModel) do
+		local current = self.avatarModel[i]
+		if avatar.x == current.x then
+			-- compare y's
+			if avatar.y == current.y then
+				table.insert(self.avatarModel, i, avatar)
+				return
+			elseif avatar.y < current.y then
+				table.insert(self.avatarModel, i, avatar)
+				return
+			end
+		elseif avatar.x < current.x then
+			-- place here
+			table.insert(self.avatarModel, i, avatar)
+			return
+		end -- if greater, just move on to next in loop
+	end
+
 	table.insert(self.avatarModel, avatar)
 end
 
