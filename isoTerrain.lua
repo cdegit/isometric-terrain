@@ -447,6 +447,8 @@ function Terrain:insertAvatarSorted(avatar)
 end
 
 -- TODO: if the grid is rotated, deleting avatar. Need to write get avatar by name function. 
+-- TODO: when one avatar moves onto the space occupied by another avatar, stuff breaks. We will need this later so make it work. 
+-- TODO: deleting the block an avatar is on makes them and ones after them invisible - this is bacause the code that would draw them and increment the counter is never run
 function Terrain:moveAvatar(avatar, x, y)
 	-- make sure we're only accepting integer input
 	x = math.floor(x)
@@ -456,7 +458,11 @@ function Terrain:moveAvatar(avatar, x, y)
 		if self.avatarModel[i] == avatar then
 
 			-- ensure that x and y are within the bounds of the grid
-			if self.avatarModel[i].x + x < 1 or self.avatarModel[i].x + x > table.getn(self.grid) or self.avatarModel[i].y + y < 1 or self.avatarModel[i].y + y > table.getn(self.grid[1]) then
+			--if self.avatarModel[i].x + x < 1 or self.avatarModel[i].x + x > table.getn(self.grid) or self.avatarModel[i].y + y < 1 or self.avatarModel[i].y + y > table.getn(self.grid[1]) then
+			--	return
+			--end
+
+			if not self:withinGridBounds(self.avatarModel[i].x + x, self.avatarModel[i].y + y) then
 				return
 			end
 
@@ -477,6 +483,9 @@ function Terrain:moveAvatar(avatar, x, y)
 	end
 end
 
+function Terrain:withinGridBounds(x, y) 
+	return x >= 1 and x <= table.getn(self.grid) and y >= 1 and y <= table.getn(self.grid[1])
+end
 -- Utility Functions
 
 -- from http://www.programmer-tutorials.com/lua-tutorial-clamp-number-inbetween-ranges/
