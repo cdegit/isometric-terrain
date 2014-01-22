@@ -40,7 +40,7 @@ function IsoCreator:creatorLoad()
 
 	self.blueprint = Terrain.create(self:makeGrid("blueprint", 7, 7), 300, 228)
   self.blueprintVisible = false
-  self.newTerrain = Terrain.create(self:makeSmartRandomGrid(7, 7), 300, 228)
+  self.newTerrain = Terrain.create(self:makeGrid("grass", 7, 7), 300, 228)
 end
 
 -- Prompt the user to either load an existing file to edit, or create a new one

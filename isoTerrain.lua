@@ -446,10 +446,33 @@ function Terrain:insertAvatarSorted(avatar)
 	table.insert(self.avatarModel, avatar)
 end
 
+-- TODO: if the grid is rotated, deleting avatar. Need to write get avatar by name function. 
 function Terrain:moveAvatar(avatar, x, y)
+	-- make sure we're only accepting integer input
+	x = math.floor(x)
+	y = math.floor(y)
+
 	for i = 1, table.getn(self.avatarModel) do
 		if self.avatarModel[i] == avatar then
-			self.avatarModel[i]:move(x, y)
+
+			-- ensure that x and y are within the bounds of the grid
+			if self.avatarModel[i].x + x < 1 or self.avatarModel[i].x + x > table.getn(self.grid) or self.avatarModel[i].y + y < 1 or self.avatarModel[i].y + y > table.getn(self.grid[1]) then
+				return
+			end
+
+			-- make sure that this block is actually at a height that the avatar can move to
+			-- and that they are adjacent. Avatars will be able to move in a path later. 
+			if math.abs(x) <= 1 and math.abs(y) <= 1 then -- check adjacent
+				local currentLocation = self.grid[self.avatarModel[i].x][self.avatarModel[i].y]
+				if math.abs(self.grid[self.avatarModel[i].x + x][self.avatarModel[i].y + y].height - currentLocation.height) <= self.avatarModel[i].jumpLimit then -- check jump distance
+					self.avatarModel[i]:move(x, y)
+
+					-- to maintain sort, should actually remove and readd avatar
+					local tempAvatar = self.avatarModel[i]
+					table.remove(self.avatarModel, i)
+					self:addAvatar(tempAvatar)
+				end
+			end
 		end
 	end
 end

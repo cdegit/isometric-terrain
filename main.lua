@@ -6,6 +6,7 @@ require "isoCreator"
 t = {}
 ic = {}
 alert = ""
+a = {}
 
 function love.load()
 	love.graphics.setBackgroundColor(100, 100, 100)
@@ -22,7 +23,6 @@ function love.load()
 
   ic:creatorLoad()
 
-  a = {}
   a = Avatar.create("sprite.png", 1, 1, 2)
   ic.newTerrain:addAvatar(a)
 
@@ -39,6 +39,7 @@ function love.draw()
 	--t:draw()
   ic:draw()
   love.graphics.print(alert, 0, 100)
+
 end
 
 function love.keypressed(key, unicode)
@@ -54,6 +55,19 @@ function love.keypressed(key, unicode)
   elseif key == "down" then
     ic.blueprint:translate(0, 100)
     ic.newTerrain:translate(0, 100)
+  end
+
+  if table.getn(ic.newTerrain.avatarModel) >= 1 then
+    local avatar = ic.newTerrain.avatarModel[1]
+    if key == "w" then
+      ic.newTerrain:moveAvatar(a, 0, -1)
+    elseif key == "a" then
+      ic.newTerrain:moveAvatar(a, 1, 0)
+    elseif key == "s" then
+      ic.newTerrain:moveAvatar(a, 0, 1)
+    elseif key == "d" then
+      ic.newTerrain:moveAvatar(a, -1, 0)
+    end
   end
 
   ic:keypressed(key, unicode)

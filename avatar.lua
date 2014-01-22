@@ -18,6 +18,7 @@ function Avatar.create(imageName, x, y, height)
    	av.sprite = love.graphics.newImage(imageName)
    	-- will also want different sprites depending on their orientation, and when the Terrain is rotated
 
+      av.jumpLimit = 1
    	return av
 end
 
