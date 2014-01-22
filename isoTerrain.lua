@@ -75,18 +75,24 @@ function Terrain:draw()
 	  			love.graphics.draw(tile,
 	            	((y-x) * (tile:getWidth() / 2)),
 	            	((x+y) * (tile:getHeight() / 4)) - ((tile:getHeight() / 2) * (table.getn(grid) / 2)) - (tile:getHeight() / 2)*grid[x][y].height)
-	   
-	  			-- draw any avatars on top of the block
-	  			if self.currentAvatar > 0 then
-		  			if self.avatarModel[self.currentAvatar].x == x and self.avatarModel[self.currentAvatar].y == y then
-		  				local avatar = self.avatarModel[self.currentAvatar]
+	   		end
+
+  			-- draw any avatars on top of the block
+  			if self.currentAvatar > 0 then
+	  			if self.avatarModel[self.currentAvatar].x == x and self.avatarModel[self.currentAvatar].y == y then
+	  				if empty == false then
+	  					local avatar = self.avatarModel[self.currentAvatar]
 						avatar:draw((avatar.y - avatar.x) * (BLOCK_WIDTH / 2), 
 							((avatar.x+avatar.y) * (BLOCK_IMGHEIGHT / 4)) - ((BLOCK_IMGHEIGHT / 2) * (table.getn(self.grid) / 2)) - (BLOCK_IMGHEIGHT / 2)* (self.grid[avatar.x][avatar.y].height + avatar.height))
-		  				if self.currentAvatar < table.getn(self.avatarModel) then
-		  					self.currentAvatar = self.currentAvatar + 1
-		  				end
-		  			end
+	  				end
+	  				-- still need to check and increment this, even if empty, so that we still go through the rest of the array
+	  				if self.currentAvatar < table.getn(self.avatarModel) then
+	  					self.currentAvatar = self.currentAvatar + 1
+	  				end
 	  			end
+  			end
+
+	  		if empty == false then	
 	  			-- if this block is selected, draw a white quad to indicate selection
 	  			-- TODO: animate, slowly flash
 	  			if x == self.selected[1] and y == self.selected[2] then
@@ -448,7 +454,8 @@ end
 
 -- TODO: if the grid is rotated, deleting avatar. Need to write get avatar by name function. 
 -- TODO: when one avatar moves onto the space occupied by another avatar, stuff breaks. We will need this later so make it work. 
--- TODO: deleting the block an avatar is on makes them and ones after them invisible - this is bacause the code that would draw them and increment the counter is never run
+-- TODO: issue when moving past other avatars by x + 1. Jumps over all the rows containing another avatar.
+-- y only seems to be an issue when walking directly into them
 function Terrain:moveAvatar(avatar, x, y)
 	-- make sure we're only accepting integer input
 	x = math.floor(x)
