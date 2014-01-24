@@ -7,8 +7,9 @@ BLOCKFILE = {[1] = "grass.png", [2] = "dirt.png", [3] = "blueprint.png"}		 -- st
 Terrain = {}
 Terrain.__index = Terrain
 
--- make an accompanying terrain creation tool
--- that writes a file that can be read by the terrain manager and drawn in game
+-- TODO: will maintain the ids of the avatars.
+-- user is able to get an avatar by its id
+
 function Terrain.create(grid, x, y)
    	local terr = {}             -- our new object
    	setmetatable(terr,Terrain)  -- make Terrain handle lookup
@@ -21,6 +22,7 @@ function Terrain.create(grid, x, y)
 
    	terr.avatarModel = {}
    	terr.currentAvatar = 0
+   	terr.nextAvId = 1
 
    	return terr
 end
@@ -421,6 +423,12 @@ function Terrain:selectTileFromMouse(x, y)
 end
 
 function Terrain:addAvatar(avatar)
+	-- check if the avatar has an id other equal to 0 - it's new and we need to give it a new id
+	if avatar.id == 0 then
+		avatar.id = self.nextAvId
+		self.nextAvId = self.nextAvId + 1
+	end
+
 	-- if this is the first avatar, just add it
 	if table.getn(self.avatarModel) > 0 then
 		self:insertAvatarSorted(avatar)
@@ -486,6 +494,21 @@ function Terrain:moveAvatar(avatar, x, y)
 					self:addAvatar(tempAvatar)
 				end
 			end
+		end
+	end
+end
+
+-- returns the avatar, which can then be used to move it
+-- will be used to fix the issue with rotating messing with avatar movement
+function Terrain:getAvatarById(id) 
+	if id > table.getn(self.avatarModel) then
+		return false
+	end
+
+	for i = 1, table.getn(self.avatarModel) do
+		local av = self.avatarModel[i]
+		if av.id == id then
+			return av
 		end
 	end
 end

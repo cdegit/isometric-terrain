@@ -8,6 +8,8 @@ function Avatar.create(imageName, x, y, height)
    	local av = {}             -- our new object
    	setmetatable(av, Avatar)  -- make Avatar handle lookup
 
+      av.id = 0
+
    	av.x = x
    	av.y = y
 
