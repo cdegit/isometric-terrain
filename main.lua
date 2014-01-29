@@ -33,6 +33,8 @@ function love.load()
  -- ic.newTerrain:addAvatar(b)
 
   ic.newTerrain:loadAvatars("avatars.txt")
+  c = ic.newTerrain:getAvatarById(1)
+  c:addAnimation("test", {"cube.png", "grass.png"})
 end
 
 function love.draw()
