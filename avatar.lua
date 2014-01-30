@@ -24,11 +24,11 @@ function Avatar.create(imageName, x, y, height)
       av.animations = {}
       av.activeAnimation = ""
 
-      -- should I store each frame as the actual image, or the file name? Probably more efficient to store the image.
-      -- still pass function a list of file names, it'll just create and add the actual images
-      av.currentFrameNumber = 1;
+      av.currentFrameNumber = 1
       av.currentFrame = love.graphics.newImage(imageName)
-      av.counter = 30;
+      av.counter = 30
+
+      av.animating = true
       -- want a set of sprites for each direction - store seperately or as 2D array?
       -- add an animation and give it a name, providing it with a set of file names? 
 
@@ -41,10 +41,10 @@ function Avatar:draw(x, y)
 	love.graphics.push()
 	love.graphics.translate(x, y)
 
-   if self.activeAnimation ~= "" then
+   if self.activeAnimation ~= "" and self.animating then
       if self.counter <= 0 then
          -- change frame number
-         local anim = self.animations[1]
+         local anim = self.animations[self.activeAnimation]
          if self.currentFrameNumber == table.getn(anim) then
             -- wrap around to first frame
             self.currentFrameNumber = 1
@@ -92,7 +92,7 @@ function Avatar:addAnimation(name, frames)
       table.insert(frameImgs, frame)
    end
 
-   self.animations[1] = frameImgs
+   self.animations[name] = frameImgs
 
    -- if this is the first animation added, it is active
    if self.activeAnimation == "" then
@@ -114,4 +114,12 @@ function Avatar:animationExists(name)
       end
    end
    return false
+end
+
+function Avatar:stopActiveAnimation()
+   self.animating = false
+end
+
+function Avatar:startActiveAnimation()
+   self.animating = true
 end
