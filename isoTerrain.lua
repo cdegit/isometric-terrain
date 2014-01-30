@@ -150,6 +150,16 @@ function Terrain:loadGrid(fileName)
 	file:close()
 end
 
+function Terrain:saveGridAndAvatars(gridFile, avatarFile)
+	self:saveGrid(gridFile);
+	self:saveAvatars(avatarFile);
+end
+
+function Terrain:loadGridAndAvatars(gridFile, avatarFile)
+	self:loadGrid(gridFile);
+	self:loadAvatars(avatarFile);
+end
+
 -- saves instance's grid to a file with the given name
 -- this file is saved in the game's save directory 
 function Terrain:saveGrid(fileName)

@@ -15,13 +15,16 @@ function love.load()
   ic = IsoCreator.create()
 
 	t:loadGrid("grid1.txt")
-	t:addBlock(5, 6, BLOCKTYPE["rock"], 2)
+	--t:addBlock(5, 6, BLOCKTYPE["rock"], 2)
 
   --t:saveGrid("grid1.txt")
 
   --t:addBlockType("cube", "cube.png")
 
   ic:creatorLoad()
+
+  --ic.newTerrain:loadAvatars("avatars.txt")
+  ic.newTerrain:loadGridAndAvatars("grid2.txt", "avatars.txt")
 
   a = Avatar.create("sprite.png", 1, 1, 2)
   ic.newTerrain:addAvatar(a)
@@ -32,9 +35,10 @@ function love.load()
   b = Avatar.create("sprite.png", 3, 5, 2)
  -- ic.newTerrain:addAvatar(b)
 
-  ic.newTerrain:loadAvatars("avatars.txt")
+  
   c = ic.newTerrain:getAvatarById(1)
   c:addAnimation("test", {"cube.png", "grass.png"})
+  --ic.newTerrain:saveGrid("grid2.txt")
 end
 
 function love.draw()
