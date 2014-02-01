@@ -3,48 +3,32 @@ require "block"
 require "avatar"
 require "isoCreator"
 
-t = {}
 ic = {}
 alert = ""
 a = {}
 
 function love.load()
 	love.graphics.setBackgroundColor(100, 100, 100)
-	local grid = {{}}
-	t = Terrain.create(grid, 300, 228)
   ic = IsoCreator.create()
-
-	t:loadGrid("grid1.txt")
-	--t:addBlock(5, 6, BLOCKTYPE["rock"], 2)
-
-  --t:saveGrid("grid1.txt")
-
-  --t:addBlockType("cube", "cube.png")
-
   ic:creatorLoad()
 
-  --ic.newTerrain:loadAvatars("avatars.txt")
   ic.newTerrain:loadGridAndAvatars("grid2.txt", "avatars.txt")
 
   a = Avatar.create("sprite.png", 1, 1, 2)
   ic.newTerrain:addAvatar(a)
-
-  --ic.newTerrain:moveAvatar(a, 1, 2)
-
-  b = {}
-  b = Avatar.create("sprite.png", 3, 5, 2)
- -- ic.newTerrain:addAvatar(b)
-
   
   c = ic.newTerrain:getAvatarById(1)
   c:addAnimation("test", {"cube.png", "grass.png"})
-  --ic.newTerrain:saveGrid("grid2.txt")
 end
 
 function love.draw()
-	--t:draw()
   ic:draw()
   love.graphics.print(alert, 0, 100)
+
+  if love.keyboard.isDown("lctrl") and love.keyboard.isDown("s") then
+    -- save the grid and avatars
+    ic.newTerrain:saveGridAndAvatars("grid2.txt", "avatars.txt")
+  end
 
 end
 
