@@ -1,9 +1,12 @@
+require("AnAL")
+
 Avatar = {}
 Avatar.__index = Avatar
 
 -- User will be able to use or extend Avatar class to place objects on the Terrain
 -- Terrain will have a function to add a new avatar to it
 -- Terrain will call Avatar's draw function; Avatar decides how it's drawn but not when
+-- Maybe when loading in avatars, check if they have any animation names stored after the default image name
 function Avatar.create(imageName, x, y, height)
    	local av = {}             -- our new object
    	setmetatable(av, Avatar)  -- make Avatar handle lookup
@@ -32,8 +35,15 @@ function Avatar.create(imageName, x, y, height)
       -- want a set of sprites for each direction - store seperately or as 2D array?
       -- add an animation and give it a name, providing it with a set of file names? 
 
+      av.spritesheet = love.graphics.newImage("spritesheet.png");
+      av.anim = newAnimation(av.spritesheet, 62, 66, 0.2, 0)
+
       av.jumpLimit = 1
    	return av
+end
+
+function Avatar:update(dt)
+   self.anim:update(dt)
 end
 
 function Avatar:draw(x, y)
@@ -42,30 +52,11 @@ function Avatar:draw(x, y)
 	love.graphics.translate(x, y)
 
    if self.activeAnimation ~= "" and self.animating then
-      if self.counter <= 0 then
-         -- change frame number
-         local anim = self.animations[self.activeAnimation]
-         if self.currentFrameNumber == table.getn(anim) then
-            -- wrap around to first frame
-            self.currentFrameNumber = 1
-         else 
-            -- increment frame
-            self.currentFrameNumber = self.currentFrameNumber + 1
-         end
+      self.anim:draw(0, 0)
+   else 
 
-         -- load new frame image
-         self.currentFrame = anim[self.currentFrameNumber]
-         
-         -- reset counter  
-         self.counter = 30
-
-      end
-
-      self.counter = self.counter - 1
+	  love.graphics.draw(self.currentFrame, 0, 0)
    end
-
-	love.graphics.draw(self.currentFrame, 0, 0)
-	
 	love.graphics.pop()
 end
 
@@ -75,9 +66,8 @@ function Avatar:move(dx, dy)
    self.y = self.y + dy
 end
 
--- TODO: should be able to set frame rate for each animation
--- Also, should probably make new class for that. Do that later. 
--- Will also allow for animations on blocks!
+-- TODO: COMPLETELY change. Just pass the filename of another spritesheet, then create an animation based on that.
+-- Add the animation to the array, 2D like current
 function Avatar:addAnimation(name, frames)
    -- check if an animation with this name already exists
    if self:animationExists(name) then
@@ -86,13 +76,14 @@ function Avatar:addAnimation(name, frames)
 
    -- frames is a set of file names
    -- we want to store the actual love images to reduce file IO
-   local frameImgs = {}
-   for i = 1, table.getn(frames) do
-      local frame = love.graphics.newImage(frames[i])
-      table.insert(frameImgs, frame)
-   end
+   
+   --local frameImgs = {}
+   --for i = 1, table.getn(frames) do
+   --   local frame = love.graphics.newImage(frames[i])
+   --   table.insert(frameImgs, frame)
+   --end
 
-   self.animations[name] = frameImgs
+   --self.animations[name] = frameImgs
 
    -- if this is the first animation added, it is active
    if self.activeAnimation == "" then

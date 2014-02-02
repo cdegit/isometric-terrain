@@ -393,6 +393,10 @@ function Terrain:rotateAvatars(angle)
 		ty = res[2] -- new y index
 
 		local newAvatar = Avatar.create(avatar.imgName, tx, ty, avatar.height)
+		newAvatar.id = avatar.id
+		newAvatar.activeAnimation = avatar.activeAnimation
+		newAvatar.animating = avatar.animating
+
 		self:addAvatar(newAvatar)
 	end
 end

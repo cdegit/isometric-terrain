@@ -6,6 +6,7 @@ require "isoCreator"
 ic = {}
 alert = ""
 a = {}
+c = {}
 
 function love.load()
 	love.graphics.setBackgroundColor(100, 100, 100)
@@ -19,6 +20,11 @@ function love.load()
   
   c = ic.newTerrain:getAvatarById(1)
   c:addAnimation("test", {"cube.png", "grass.png"})
+end
+
+function love.update(dt)
+  c = ic.newTerrain:getAvatarById(1)
+  c:update(dt)
 end
 
 function love.draw()
