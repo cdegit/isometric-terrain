@@ -18,8 +18,12 @@ function love.load()
   a = Avatar.create("sprite.png", 1, 1, 2)
   ic.newTerrain:addAvatar(a)
   
+  local spritesheet = love.graphics.newImage("spritesheet.png");
+  local anim = newAnimation(spritesheet, 62, 66, 0.2, 0)
+
   c = ic.newTerrain:getAvatarById(1)
-  c:addAnimation("test", {"cube.png", "grass.png"})
+  c:addAnimation("test", anim)
+  c.animating = true
 end
 
 function love.update(dt)

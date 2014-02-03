@@ -394,6 +394,7 @@ function Terrain:rotateAvatars(angle)
 
 		local newAvatar = Avatar.create(avatar.imgName, tx, ty, avatar.height)
 		newAvatar.id = avatar.id
+		newAvatar.animations = avatar.animations
 		newAvatar.activeAnimation = avatar.activeAnimation
 		newAvatar.animating = avatar.animating
 

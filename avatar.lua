@@ -19,31 +19,26 @@ function Avatar.create(imageName, x, y, height)
    	av.height = height
 
       av.imgName = imageName
-   	-- TODO: create a generic sprite for this
    	av.sprite = love.graphics.newImage(imageName)
    	-- will also want different sprites depending on their orientation, and when the Terrain is rotated
 
-      -- associative array, name of animation as key, set of frames as value
+      -- associative array, name of animation as key, animation object as val
       av.animations = {}
       av.activeAnimation = ""
 
-      av.currentFrameNumber = 1
-      av.currentFrame = love.graphics.newImage(imageName)
-      av.counter = 30
-
-      av.animating = true
-      -- want a set of sprites for each direction - store seperately or as 2D array?
-      -- add an animation and give it a name, providing it with a set of file names? 
-
-      av.spritesheet = love.graphics.newImage("spritesheet.png");
-      av.anim = newAnimation(av.spritesheet, 62, 66, 0.2, 0)
+      -- should change to false
+      av.animating = false
 
       av.jumpLimit = 1
    	return av
 end
 
 function Avatar:update(dt)
-   self.anim:update(dt)
+   -- update all animations in animations
+   for key, value in pairs(self.animations) do
+      local animation = value
+      animation:update(dt)
+   end
 end
 
 function Avatar:draw(x, y)
@@ -52,10 +47,12 @@ function Avatar:draw(x, y)
 	love.graphics.translate(x, y)
 
    if self.activeAnimation ~= "" and self.animating then
-      self.anim:draw(0, 0)
+      -- draw active animation
+      local currentAnim = self.animations[self.activeAnimation]
+      currentAnim:draw(0, 0)
    else 
-
-	  love.graphics.draw(self.currentFrame, 0, 0)
+      -- if no animation, just draw the sprite
+	   love.graphics.draw(self.sprite, 0, 0)
    end
 	love.graphics.pop()
 end
@@ -66,24 +63,14 @@ function Avatar:move(dx, dy)
    self.y = self.y + dy
 end
 
--- TODO: COMPLETELY change. Just pass the filename of another spritesheet, then create an animation based on that.
--- Add the animation to the array, 2D like current
-function Avatar:addAnimation(name, frames)
+-- Accepts animation object itself, allows the user to configure things without us having to pass params
+function Avatar:addAnimation(name, animation)
    -- check if an animation with this name already exists
    if self:animationExists(name) then
       return false
    end
 
-   -- frames is a set of file names
-   -- we want to store the actual love images to reduce file IO
-   
-   --local frameImgs = {}
-   --for i = 1, table.getn(frames) do
-   --   local frame = love.graphics.newImage(frames[i])
-   --   table.insert(frameImgs, frame)
-   --end
-
-   --self.animations[name] = frameImgs
+   self.animations[name] = animation
 
    -- if this is the first animation added, it is active
    if self.activeAnimation == "" then
@@ -91,7 +78,6 @@ function Avatar:addAnimation(name, frames)
    end
 end
 
--- don't have a function to draw the animation directly, as it will be handled in draw
 function Avatar:chooseActiveAnimation(name)
    if animationExists(name) then
       self.activeAnimation = name
@@ -105,12 +91,4 @@ function Avatar:animationExists(name)
       end
    end
    return false
-end
-
-function Avatar:stopActiveAnimation()
-   self.animating = false
-end
-
-function Avatar:startActiveAnimation()
-   self.animating = true
 end
