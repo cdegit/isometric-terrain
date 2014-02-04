@@ -35,7 +35,7 @@ function love.draw()
   ic:draw()
   love.graphics.print(alert, 0, 100)
 
-  if love.keyboard.isDown("lctrl") and love.keyboard.isDown("s") then
+  if (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") ) and love.keyboard.isDown("s") then
     -- save the grid and avatars
     ic.newTerrain:saveGridAndAvatars("grid2.txt", "avatars.txt")
   end

@@ -92,3 +92,33 @@ function Avatar:animationExists(name)
    end
    return false
 end
+
+-- for now, add function to save animations here
+-- in the end, will probably be done in isoTerrain or something, once animations are working for blocks too
+-- TODO: get name of the spritesheet, get delay. For now maybe just assume a default delay and write that. 
+function Avatar:saveAnimations(filename)
+   file = love.filesystem.newFile(filename)
+   file:open("w")
+
+   for key, value in pairs(self.animations) do
+      -- write name of animation, spritesheet, framesize, speed
+      local animation = value
+      file:write(key)
+      file:write(" ")
+      --file:write(animation.image) -- image name. Could also just get the image data as a string, I guess, but that's super gross. 
+      file:write(" ")
+      file:write(animation.fw)
+      file:write(" ")
+      file:write(animation.fh)
+      file:write(" ")
+      file:write("0.1") -- default animation speed for now
+      file:write(" ")
+      file:write("") -- number of frames
+      -- maybe also include mode? 
+
+      -- one record per line
+      file:write("\n")
+   end
+
+   file:close()
+end

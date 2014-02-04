@@ -109,6 +109,8 @@ function Terrain:draw()
 	love.graphics.pop()
 end
 
+-- Save and Load functions --
+
 function Terrain:loadGrid(fileName)
 	file = love.filesystem.newFile(fileName)
 	file:open("r")
@@ -160,8 +162,6 @@ function Terrain:loadGridAndAvatars(gridFile, avatarFile)
 	self:loadAvatars(avatarFile);
 end
 
--- saves instance's grid to a file with the given name
--- this file is saved in the game's save directory 
 function Terrain:saveGrid(fileName)
 	file = love.filesystem.newFile(fileName)
 	file:open("w")
@@ -229,11 +229,11 @@ function Terrain:loadAvatars(filename)
 		
 		-- add avatar to the model
 		self:addAvatar(av)
-		--table.insert(self.avatarModel, av)
 	end
 
 	file:close()
 end
+
 
 function Terrain:addBlock(x, y, blockType, height)
 	-- check if x and y are already within the bounds of the grid
@@ -297,9 +297,6 @@ function Terrain:clickCheckHeight()
   	elseif self.selected[2] < 1 or self.selected[2] > table.getn(self.grid[1]) then
   		return
   	end
-  	
-  	--self.selected[1] = math.clamp(self.selected[1], 1, table.getn(self.grid))
-  	--self.selected[2] = math.clamp(self.selected[2], 1, table.getn(self.grid[1]))
 
 	diffX = table.getn(self.grid) - self.selected[1]
 	diffY = table.getn(self.grid[1]) - self.selected[2]
@@ -475,8 +472,7 @@ function Terrain:insertAvatarSorted(avatar)
 	table.insert(self.avatarModel, avatar)
 end
 
--- TODO: if the grid is rotated, deleting avatar. Need to write get avatar by name function. 
--- TODO: when one avatar moves onto the space occupied by another avatar, stuff breaks. We will need this later so make it work. 
+-- TODO: add z-index
 -- TODO: issue when moving past other avatars by x + 1. Jumps over all the rows containing another avatar.
 -- y only seems to be an issue when walking directly into them
 function Terrain:moveAvatar(avatar, x, y)
@@ -488,10 +484,6 @@ function Terrain:moveAvatar(avatar, x, y)
 		if self.avatarModel[i] == avatar then
 
 			-- ensure that x and y are within the bounds of the grid
-			--if self.avatarModel[i].x + x < 1 or self.avatarModel[i].x + x > table.getn(self.grid) or self.avatarModel[i].y + y < 1 or self.avatarModel[i].y + y > table.getn(self.grid[1]) then
-			--	return
-			--end
-
 			if not self:withinGridBounds(self.avatarModel[i].x + x, self.avatarModel[i].y + y) then
 				return
 			end

@@ -274,7 +274,6 @@ function IsoCreator:makeSmartRandomGrid(width, height)
       else
         -- select a random block type and height 
         -- ensure that the height of a block is no more than 1 away from the block prior to it
-        -- TODO: make it so that it is no more than the block beside it - check block [x-1][y] if exists
         local randomType = math.random(table.getn(BLOCKFILE))
         local randomHeight = math.random(lastHeight - 1, lastHeight + 1)
         randomHeight = math.max(0, randomHeight)
