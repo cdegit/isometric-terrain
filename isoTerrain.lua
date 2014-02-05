@@ -437,6 +437,13 @@ end
 function Terrain:addAvatar(avatar)
 	-- check if the avatar has an id other equal to 0 - it's new and we need to give it a new id
 	if avatar.id == 0 then
+		-- if it's new, make sure it isn't trying to occupy the same space as another avatar
+		for i = 1, table.getn(self.avatarModel) do
+			if avatar.x == self.avatarModel[i].x and avatar.y == self.avatarModel[i].y then
+				return false
+			end 
+		end
+
 		avatar.id = self.nextAvId
 		self.nextAvId = self.nextAvId + 1
 	end

@@ -106,6 +106,7 @@ function Avatar:saveAnimations(filename)
       file:write(key)
       file:write(" ")
       --file:write(animation.image) -- image name. Could also just get the image data as a string, I guess, but that's super gross. 
+      -- could also enforce that name of animation is same as name of file
       file:write(" ")
       file:write(animation.fw)
       file:write(" ")

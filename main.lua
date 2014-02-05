@@ -5,7 +5,6 @@ require "isoCreator"
 
 ic = {}
 alert = ""
-a = {}
 c = {}
 
 function love.load()
@@ -14,9 +13,6 @@ function love.load()
   ic:creatorLoad()
 
   ic.newTerrain:loadGridAndAvatars("grid2.txt", "avatars.txt")
-
-  a = Avatar.create("sprite.png", 1, 1, 2)
-  ic.newTerrain:addAvatar(a)
   
   local spritesheet = love.graphics.newImage("spritesheet.png");
   local anim = newAnimation(spritesheet, 62, 66, 0.2, 0)
@@ -38,6 +34,12 @@ function love.draw()
   if (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") ) and love.keyboard.isDown("s") then
     -- save the grid and avatars
     ic.newTerrain:saveGridAndAvatars("grid2.txt", "avatars.txt")
+  end
+
+  -- getting a duplicate value which is stopping the rest from drawing!!!
+  for i = 1, table.getn(ic.newTerrain.avatarModel) do
+    love.graphics.print(ic.newTerrain.avatarModel[i].x, i * 20, 300)
+    love.graphics.print(ic.newTerrain.avatarModel[i].y, i * 20, 350)
   end
 
 end
