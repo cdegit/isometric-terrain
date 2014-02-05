@@ -60,15 +60,15 @@ function love.keypressed(key, unicode)
   end
 
   if table.getn(ic.newTerrain.avatarModel) >= 1 then
-    local avatar = ic.newTerrain.avatarModel[1]
+    local avatar = ic.newTerrain:getAvatarById(1)
     if key == "w" then
-      ic.newTerrain:moveAvatar(a, 0, -1)
+      ic.newTerrain:moveAvatar(avatar, 0, -1)
     elseif key == "a" then
-      ic.newTerrain:moveAvatar(a, 1, 0)
+      ic.newTerrain:moveAvatar(avatar, 1, 0)
     elseif key == "s" then
-      ic.newTerrain:moveAvatar(a, 0, 1)
+      ic.newTerrain:moveAvatar(avatar, 0, 1)
     elseif key == "d" then
-      ic.newTerrain:moveAvatar(a, -1, 0)
+      ic.newTerrain:moveAvatar(avatar, -1, 0)
     end
   end
 

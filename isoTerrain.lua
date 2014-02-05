@@ -90,6 +90,10 @@ function Terrain:draw()
 	  				-- still need to check and increment this, even if empty, so that we still go through the rest of the array
 	  				if self.currentAvatar < table.getn(self.avatarModel) then
 	  					self.currentAvatar = self.currentAvatar + 1
+	  					-- check to make sure that the next x in the array aren't in the same position
+	  					while self.avatarModel[self.currentAvatar].x == x and self.avatarModel[self.currentAvatar].y == y and self.currentAvatar < table.getn(self.avatarModel) do
+	  						self.currentAvatar = self.currentAvatar + 1
+	  					end
 	  				end
 	  			end
   			end
