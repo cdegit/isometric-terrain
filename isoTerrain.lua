@@ -7,9 +7,7 @@ BLOCKFILE = {[1] = "grass.png", [2] = "dirt.png", [3] = "blueprint.png"}		 -- st
 Terrain = {}
 Terrain.__index = Terrain
 
--- TODO: will maintain the ids of the avatars.
--- user is able to get an avatar by its id
-
+-- TODO: MUST store appropriate blocktypes and files. If user adds a new block type and saves, we NEED to record this. 
 function Terrain.create(grid, x, y)
    	local terr = {}             -- our new object
    	setmetatable(terr,Terrain)  -- make Terrain handle lookup

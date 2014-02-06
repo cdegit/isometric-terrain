@@ -3,55 +3,61 @@ require "textbox"
 Dialog = {}
 Dialog.__index = Dialog
 
-function Dialog.create(x, y)
+-- TODO: change dialog to accept a dialog type or name, draw everything based on that
+function Dialog.create(type, x, y)
    	local dialog = {}             -- our new object
    	setmetatable(dialog,Dialog) 
-   	dialog.x = x
-   	dialog.y = y
-      dialog.nameTextbox = Textbox.create("Type Name: ", 0, 0)
-      dialog.fileTextbox = Textbox.create("File Name: ", 0, 50)
-      dialog.visible = false
-      dialog.selectedTextbox = dialog.nameTextbox
+   	dialog.type = type;
 
-      dialog.closeButtonX = 30
-      dialog.addButtonX = 140
-      dialog.buttonY = 100
-      dialog.buttonWidth = 60
-      dialog.buttonHeight = 25
+    dialog.x = x
+   	dialog.y = y
+    dialog.nameTextbox = Textbox.create("Type Name: ", 0, 0)
+    dialog.fileTextbox = Textbox.create("File Name: ", 0, 50)
+    dialog.visible = false
+    dialog.selectedTextbox = dialog.nameTextbox
+
+    dialog.closeButtonX = 30
+    dialog.addButtonX = 140
+    dialog.buttonY = 100
+    dialog.buttonWidth = 60
+    dialog.buttonHeight = 25
 
    	return dialog
 end
 
 function Dialog:draw()
-   local r, g, b, a = love.graphics.getColor()
-   
-   -- grey out the background so the user knows they can't interact with it currently
-   love.graphics.setColor(0, 0, 0, 150)
-   love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
-   love.graphics.setColor(r, g, b, a)
+  if self.type == "addBlockType" then
+    local r, g, b, a = love.graphics.getColor()
 
-   love.graphics.push()
-   love.graphics.translate(self.x, self.y)
+    -- grey out the background so the user knows they can't interact with it currently
+    love.graphics.setColor(0, 0, 0, 150)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+    love.graphics.setColor(r, g, b, a)
 
-  -- draw dialog background
-  love.graphics.setColor(70, 70, 70)
-  love.graphics.rectangle("fill", -10, -10, 250, 150)
-  love.graphics.setColor(r, g, b, a)
+    love.graphics.push()
+    love.graphics.translate(self.x, self.y)
 
-  -- draw Textboxes
-   self.nameTextbox:draw()
-   self.fileTextbox:draw()
+    -- draw dialog background
+    love.graphics.setColor(70, 70, 70)
+    love.graphics.rectangle("fill", -10, -10, 250, 150)
+    love.graphics.setColor(r, g, b, a)
 
-  -- draw add and close buttons
-  love.graphics.rectangle("fill", self.closeButtonX, self.buttonY, self.buttonWidth, self.buttonHeight)
-  love.graphics.rectangle("fill", self.addButtonX, self.buttonY, self.buttonWidth, self.buttonHeight)
+    -- draw Textboxes
+    self.nameTextbox:draw()
+    self.fileTextbox:draw()
 
-  love.graphics.setColor(0, 0, 0)
-  love.graphics.print("Add", self.addButtonX + 18, self.buttonY + 6)
-  love.graphics.print("Close", self.closeButtonX + 13, self.buttonY + 6)
-  love.graphics.setColor(r, g, b, a)
+    -- draw add and close buttons
+    love.graphics.rectangle("fill", self.closeButtonX, self.buttonY, self.buttonWidth, self.buttonHeight)
+    love.graphics.rectangle("fill", self.addButtonX, self.buttonY, self.buttonWidth, self.buttonHeight)
 
-  love.graphics.pop()
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.print("Add", self.addButtonX + 18, self.buttonY + 6)
+    love.graphics.print("Close", self.closeButtonX + 13, self.buttonY + 6)
+    love.graphics.setColor(r, g, b, a)
+
+    love.graphics.pop()
+
+  end
 end
 
 function Dialog:mousepressed(x, y)

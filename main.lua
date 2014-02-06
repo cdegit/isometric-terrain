@@ -31,15 +31,10 @@ function love.draw()
   ic:draw()
   love.graphics.print(alert, 0, 100)
 
+  -- if the user is pressing CTRL-S
   if (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") ) and love.keyboard.isDown("s") then
     -- save the grid and avatars
     ic.newTerrain:saveGridAndAvatars("grid2.txt", "avatars.txt")
-  end
-
-  -- getting a duplicate value which is stopping the rest from drawing!!!
-  for i = 1, table.getn(ic.newTerrain.avatarModel) do
-    love.graphics.print(ic.newTerrain.avatarModel[i].x, i * 20, 300)
-    love.graphics.print(ic.newTerrain.avatarModel[i].y, i * 20, 350)
   end
 
 end

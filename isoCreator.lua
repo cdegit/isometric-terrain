@@ -31,12 +31,14 @@ function IsoCreator.create()
 
   iso.promptVisible = true
 
+  iso.startScreen = false
+
   return iso
 end
 
 
 function IsoCreator:creatorLoad()
-  self.dialog = Dialog.create(love.graphics.getWidth()/2 - 130, love.graphics.getHeight()/2 - 75)
+  self.dialog = Dialog.create("addBlockType", love.graphics.getWidth()/2 - 130, love.graphics.getHeight()/2 - 75)
 
 	self.blueprint = Terrain.create(self:makeGrid("blueprint", 7, 7), 300, 228)
   self.blueprintVisible = false
@@ -49,6 +51,13 @@ function IsoCreator:loadPrompt()
 end
 
 function IsoCreator:draw()
+  if self.startScreen then
+    -- display the start screen and don't draw anything behind it
+    -- draw a dialog, prompt the user to either load grid and avatar files or create a new terrain
+
+    return
+  end
+
   self:drawTerrains()
   self:drawBlockTypes()
   self:drawRotateButtons()
@@ -66,6 +75,16 @@ function IsoCreator:draw()
   end
 end
 
+function IsoCreator:startNew()
+  self.blueprint = Terrain.create(self:makeGrid("blueprint", 7, 7), 300, 228)
+  self.blueprintVisible = true
+  self.newTerrain = Terrain.create(self:makeGrid("empty", 7, 7), 300, 228)  
+end
+
+function IsoCreator:loadExisting()
+  -- draw a new dialog prompting the user to enter the file names for avatars and grid
+end
+
 -- draws 2 terrains: the blueprint terrain and the actual terrain being built
 function IsoCreator:drawTerrains()
   self.newTerrain:draw()
@@ -75,6 +94,11 @@ function IsoCreator:drawTerrains()
 end
 
 function IsoCreator:mousepressed(x, y, button)
+  if self.startScreen then
+    -- check for mouse events on start screen only
+    return
+  end
+
   -- if the dialog is being displayed, disable mouse clicks on the background
   -- this stops the user from accidentally creating or deleting blocks
   if self.dialog.visible then
