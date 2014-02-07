@@ -236,6 +236,67 @@ function Terrain:loadAvatars(filename)
 	file:close()
 end
 
+--BLOCKTYPE = {["empty"] = 0, ["grass"] = 1, ["rock"] = 2, ["blueprint"] = 3} -- allows you to easily create the new block based on name
+--BLOCKFILE = {[1] = "grass.png", [2] = "dirt.png", [3] = "blueprint.png"}		 -- stores the file names for the blocks to be drawn
+
+function Terrain:saveBlockTypes(filename)
+	-- format will be one line for #, name, filename
+	-- will separate into the 2 arrays in load
+	local file = love.filesystem.newFile(filename)
+	file:open("w")
+
+	-- 1 name filename
+	-- write empty first because it's special
+	file:write("0 empty")
+	file:write("\n")
+
+	local counter = 1
+	for key, value in pairs(BLOCKTYPE) do
+		if value ~= 0 then
+			local s = value .. " " .. key .. " "
+			local fn = BLOCKFILE[value]
+			s = s .. fn
+			
+			file:write(s)
+			if counter < table.getn(BLOCKFILE) then
+				file:write("\n")
+			end
+			counter = counter + 1
+		end
+	end
+
+	file:close()
+
+end
+
+function Terrain:loadBlockTypes(filename)
+	local file = love.filesystem.newFile(filename)
+	file:open("r")
+
+	local blockTypes = {}
+
+	j = 1
+	for line in file:lines() do
+		blockTypes[j] = string.split(line, " ")
+		j = j + 1
+	end
+
+	-- first one will always be the empty block, which as no filename
+	for i = 1, table.getn(blockTypes) do
+		local index = blockTypes[i][1]
+		local name = blockTypes[i][2]
+		BLOCKTYPE[name] = tonumber(index)
+
+		if i > 1 then
+			local fn = blockTypes[i][3]
+			BLOCKFILE[tonumber(index)] = fn
+			
+		end
+	end
+
+	file:close()
+end
+
 
 function Terrain:addBlock(x, y, blockType, height)
 	-- check if x and y are already within the bounds of the grid

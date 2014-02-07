@@ -20,6 +20,8 @@ function love.load()
   c = ic.newTerrain:getAvatarById(1)
   c:addAnimation("test", anim)
   c.animating = true
+
+  ic.newTerrain:loadBlockTypes("types.txt")
 end
 
 function love.update(dt)
@@ -35,6 +37,7 @@ function love.draw()
   if (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") ) and love.keyboard.isDown("s") then
     -- save the grid and avatars
     ic.newTerrain:saveGridAndAvatars("grid2.txt", "avatars.txt")
+    ic.newTerrain:saveBlockTypes("types.txt")
   end
 
 end
